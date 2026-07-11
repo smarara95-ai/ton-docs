@@ -32,6 +32,7 @@ export function InstructionSearch({ instructions, aliases }: InstructionSearchPr
         value={inputValue}
         type="text"
         placeholder={'Search'}
+        aria-label="Search instructions"
       />
       <InstructionGroups instructions={instructions} aliases={aliases ?? []} search={debouncedValue} />
     </div>

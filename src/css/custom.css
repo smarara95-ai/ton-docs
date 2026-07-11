@@ -1,9 +1,9 @@
 :root {
   --ifm-color-primary: #0088cc;
-  --ifm-color-primary-dark: #0088CC;
+  --ifm-color-primary-dark: #007db8;
   --ifm-color-primary-darker: #0074ad;
   --ifm-color-primary-darkest: #005f8f;
-  --ifm-color-primary-light: #0088CC;
+  --ifm-color-primary-light: #0096e0;
   --ifm-color-primary-lighter: #009ceb;
   --ifm-color-primary-lightest: #0aadff;
   --ifm-color-success-dark: #47C58A;
@@ -150,8 +150,8 @@ body {
 
   --card-hover-box-shadow: 0px 2px 24px rgba(114, 138, 150, 0.12);
   --card-box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.08);
-  --ligth-green: rgba(255, 92, 92, 0.08);
-  --ligth-red: rgba(71, 197, 138, 0.1);
+  --light-green: rgba(71, 197, 138, 0.1);
+  --light-red: rgba(255, 92, 92, 0.08);
 
   --dark-selection: rgba(1, 164, 245, 0.1);
   --light-selection: rgba(0, 136, 204, 0.1);
@@ -1799,7 +1799,7 @@ a img,button img {
   color: #0099e5
 }
 
-[data-theme=ligth] .menu__list-item-collapsible a,[data-theme=ligth] .table-of-contents__link {
+[data-theme=light] .menu__list-item-collapsible a,[data-theme=light] .table-of-contents__link {
   color: #111
 }
 

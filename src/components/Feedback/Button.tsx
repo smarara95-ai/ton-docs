@@ -57,8 +57,8 @@ function Button({ children, event, isDisabled, setIsDisabled }: Props) {
           fontStyle: "normal",
           fontWeight: "500",
           lineHeight: "18px",
-          backgroundColor: colorMode === "dark" && "#232328",
-          color: colorMode === "dark" && "#FFF",
+          backgroundColor: colorMode === "dark" ? "#232328" : undefined,
+          color: colorMode === "dark" ? "#FFF" : undefined,
         }}
         border="1px solid rgba(118, 152, 187, 0.35)"
         openOnClick={true}

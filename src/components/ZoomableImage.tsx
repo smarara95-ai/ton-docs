@@ -6,9 +6,9 @@ function Controls() {
 
   return (
     <div className="tools">
-      <button onClick={() => zoomIn()}>+</button>
-      <button onClick={() => zoomOut()}>-</button>
-      <button onClick={() => resetTransform()}>×</button>
+      <button onClick={() => zoomIn()} aria-label="Zoom in">+</button>
+      <button onClick={() => zoomOut()} aria-label="Zoom out">-</button>
+      <button onClick={() => resetTransform()} aria-label="Reset zoom">×</button>
     </div>
   );
 };
