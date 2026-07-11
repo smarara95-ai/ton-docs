@@ -1,0 +1,330 @@
+{
+  "version.label": {
+    "message": "التالي",
+    "description": "The label for version current"
+  },
+  "sidebar.learn.category.TON Blockchain": {
+    "message": "بلوكتشين TON",
+    "description": "The label for category TON Blockchain in sidebar learn"
+  },
+  "sidebar.learn.category.TON Networking": {
+    "message": "شبكة TON",
+    "description": "The label for category TON Networking in sidebar learn"
+  },
+  "sidebar.learn.category.ADNL Protocol": {
+    "message": "بروتوكول ADNL",
+    "description": "The label for category ADNL Protocol in sidebar learn"
+  },
+  "sidebar.learn.category.TON Whitepapers": {
+    "message": "الأوراق البيضاء لـ TON",
+    "description": "The label for category TON Whitepapers in sidebar learn"
+  },
+  "sidebar.learn.link.TON Compared to Other L1s": {
+    "message": "مقارنة TON بشبكات L1 الأخرى",
+    "description": "The label for link TON Compared to Other L1s in sidebar learn, linking to https://ton.org/analysis"
+  },
+  "sidebar.learn.link.Open-Source and Decentralization in TON": {
+    "message": "المصدر المفتوح واللامركزية في TON",
+    "description": "The label for link Open-Source and Decentralization in TON in sidebar learn, linking to https://defi.org/ton/"
+  },
+  "sidebar.learn.link.TON": {
+    "message": "TON",
+    "description": "The label for link TON in sidebar learn, linking to https://docs.ton.org/ton.pdf"
+  },
+  "sidebar.learn.link.TON Virtual Machine": {
+    "message": "الآلة الافتراضية TON",
+    "description": "The label for link TON Virtual Machine in sidebar learn, linking to https://docs.ton.org/tvm.pdf"
+  },
+  "sidebar.learn.link.TON Blockchain": {
+    "message": "بلوكتشين TON",
+    "description": "The label for link TON Blockchain in sidebar learn, linking to https://docs.ton.org/tblkch.pdf"
+  },
+  "sidebar.learn.link.Catchain Consensus Protocol": {
+    "message": "بروتوكول توافق Catchain",
+    "description": "The label for link Catchain Consensus Protocol in sidebar learn, linking to https://docs.ton.org/catchain.pdf"
+  },
+  "sidebar.learn.doc.Overview": {
+    "message": "نظرة عامة",
+    "description": "The label for the doc item Overview in sidebar learn, linking to the doc learn/docs"
+  },
+  "sidebar.develop.category.TON Hello World series": {
+    "message": "سلسلة TON Hello World",
+    "description": "The label for category TON Hello World series in sidebar develop"
+  },
+  "sidebar.develop.category.Smart Contracts": {
+    "message": "العقود الذكية",
+    "description": "The label for category Smart Contracts in sidebar develop"
+  },
+  "sidebar.develop.category.Getting Started": {
+    "message": "البدء",
+    "description": "The label for category Getting Started in sidebar develop"
+  },
+  "sidebar.develop.category.Testing and Debugging": {
+    "message": "الاختبار وتصحيح الأخطاء",
+    "description": "The label for category Testing and Debugging in sidebar develop"
+  },
+  "sidebar.develop.category.Development Guidelines": {
+    "message": "إرشادات التطوير",
+    "description": "The label for category Development Guidelines in sidebar develop"
+  },
+  "sidebar.develop.category.Message Management": {
+    "message": "إدارة الرسائل",
+    "description": "The label for category Message Management in sidebar develop"
+  },
+  "sidebar.develop.category.Transaction Fees": {
+    "message": "رسوم المعاملات",
+    "description": "The label for category Transaction Fees in sidebar develop"
+  },
+  "sidebar.develop.category.Security Measures": {
+    "message": "تدابير الأمان",
+    "description": "The label for category Security Measures in sidebar develop"
+  },
+  "sidebar.develop.category.Core Contracts": {
+    "message": "العقود الأساسية",
+    "description": "The label for category Core Contracts in sidebar develop"
+  },
+  "sidebar.develop.category.Tutorials & Examples": {
+    "message": "الدروس والأمثلة",
+    "description": "The label for category Tutorials & Examples in sidebar develop"
+  },
+  "sidebar.develop.category.DApps Development": {
+    "message": "تطوير التطبيقات اللامركزية",
+    "description": "The label for category DApps Development in sidebar develop"
+  },
+  "sidebar.develop.category.Telegram Mini Apps": {
+    "message": "تطبيقات Telegram المصغّرة",
+    "description": "The label for category Telegram Mini Apps in sidebar develop"
+  },
+  "sidebar.develop.category.Guidelines": {
+    "message": "الإرشادات",
+    "description": "The label for category Guidelines in sidebar develop"
+  },
+  "sidebar.develop.category.APIs and SDKs": {
+    "message": "واجهات برمجة التطبيقات وحزم تطوير البرمجيات",
+    "description": "The label for category APIs and SDKs in sidebar develop"
+  },
+  "sidebar.develop.category.DeFi Development": {
+    "message": "تطوير التمويل اللامركزي",
+    "description": "The label for category DeFi Development in sidebar develop"
+  },
+  "sidebar.develop.category.Telegram Bot Examples": {
+    "message": "أمثلة على روبوتات Telegram",
+    "description": "The label for category Telegram Bot Examples in sidebar develop"
+  },
+  "sidebar.develop.category.Integrate with TON": {
+    "message": "التكامل مع TON",
+    "description": "The label for category Integrate with TON in sidebar develop"
+  },
+  "sidebar.develop.category.Frameworks": {
+    "message": "الأطر البرمجية",
+    "description": "The label for category Frameworks in sidebar develop"
+  },
+  "sidebar.develop.category.Advanced": {
+    "message": "متقدم",
+    "description": "The label for category Advanced in sidebar develop"
+  },
+  "sidebar.develop.category.Business": {
+    "message": "الأعمال",
+    "description": "The label for category Business in sidebar develop"
+  },
+  "sidebar.develop.category.Network Configurations": {
+    "message": "إعدادات الشبكة",
+    "description": "The label for category Network Configurations in sidebar develop"
+  },
+  "sidebar.develop.category.FunC language": {
+    "message": "لغة FunC",
+    "description": "The label for category FunC language in sidebar develop"
+  },
+  "sidebar.develop.category.Documentation": {
+    "message": "التوثيق",
+    "description": "The label for category Documentation in sidebar develop"
+  },
+  "sidebar.develop.category.Fift language": {
+    "message": "لغة Fift",
+    "description": "The label for category Fift language in sidebar develop"
+  },
+  "sidebar.develop.category.TON Virtual Machine (TVM)": {
+    "message": "الآلة الافتراضية TON (TVM)",
+    "description": "The label for category TON Virtual Machine (TVM) in sidebar develop"
+  },
+  "sidebar.develop.category.Blockchain Fundamentals": {
+    "message": "أساسيات البلوكتشين",
+    "description": "The label for category Blockchain Fundamentals in sidebar develop"
+  },
+  "sidebar.develop.category.Data Formats": {
+    "message": "تنسيقات البيانات",
+    "description": "The label for category Data Formats in sidebar develop"
+  },
+  "sidebar.develop.category.TL-B": {
+    "message": "TL-B",
+    "description": "The label for category TL-B in sidebar develop"
+  },
+  "sidebar.develop.category.Network Protocols": {
+    "message": "بروتوكولات الشبكة",
+    "description": "The label for category Network Protocols in sidebar develop"
+  },
+  "sidebar.develop.category.Compile from Sources": {
+    "message": "البناء من المصدر",
+    "description": "The label for category Compile from Sources in sidebar develop"
+  },
+  "sidebar.develop.category.Archived": {
+    "message": "مؤرشف",
+    "description": "The label for category Archived in sidebar develop"
+  },
+  "sidebar.develop.link.Working with your wallet": {
+    "message": "العمل مع محفظتك",
+    "description": "The label for link Working with your wallet in sidebar develop, linking to https://helloworld.tonstudio.io/01-wallet"
+  },
+  "sidebar.develop.link.Writing first smart contract": {
+    "message": "كتابة أول عقد ذكي",
+    "description": "The label for link Writing first smart contract in sidebar develop, linking to https://helloworld.tonstudio.io/02-contract"
+  },
+  "sidebar.develop.link.Building first web client": {
+    "message": "بناء أول عميل ويب",
+    "description": "The label for link Building first web client in sidebar develop, linking to https://helloworld.tonstudio.io/03-client"
+  },
+  "sidebar.develop.link.Testing your smart contract": {
+    "message": "اختبار عقدك الذكي",
+    "description": "The label for link Testing your smart contract in sidebar develop, linking to https://helloworld.tonstudio.io/04-testing"
+  },
+  "sidebar.develop.link.How to shard your TON smart contract and why": {
+    "message": "كيف تُجزّئ عقد TON الذكي ولماذا",
+    "description": "The label for link How to shard your TON smart contract and why in sidebar develop, linking to https://blog.ton.org/how-to-shard-your-ton-smart-contract-and-why-studying-the-anatomy-of-tons-jettons"
+  },
+  "sidebar.develop.link.Wallets List": {
+    "message": "قائمة المحافظ",
+    "description": "The label for link Wallets List in sidebar develop, linking to https://github.com/ton-blockchain/wallets-list"
+  },
+  "sidebar.develop.link.TVM Instructions": {
+    "message": "تعليمات TVM",
+    "description": "The label for link TVM Instructions in sidebar develop, linking to /learn/tvm-instructions/instructions"
+  },
+  "sidebar.develop.doc.Get Started with TON": {
+    "message": "ابدأ مع TON",
+    "description": "The label for the doc item Get Started with TON in sidebar develop, linking to the doc develop/get-started-with-ton"
+  },
+  "sidebar.develop.doc.NFT Use Cases in TON": {
+    "message": "حالات استخدام NFT في TON",
+    "description": "The label for the doc item NFT Use Cases in TON in sidebar develop, linking to the NFT doc"
+  },
+  "sidebar.develop.doc.NFT Minting Guide": {
+    "message": "دليل سك NFT",
+    "description": "The label for the doc item NFT Minting Guide in sidebar develop, linking to the doc develop/dapps/tutorials/collection-minting"
+  },
+  "sidebar.develop.doc.Mint Your First Token": {
+    "message": "اسكّ رمزك الأول",
+    "description": "The label for the doc item Mint Your First Token in sidebar develop, linking to the doc develop/dapps/tutorials/jetton-minter"
+  },
+  "sidebar.develop.doc.Zero-Knowledge Proofs": {
+    "message": "إثباتات المعرفة الصفرية",
+    "description": "The label for the doc item Zero-Knowledge Proofs in sidebar develop, linking to the doc develop/dapps/tutorials/simple-zk-on-ton"
+  },
+  "sidebar.develop.doc.Web3 Game Example": {
+    "message": "مثال على لعبة Web3",
+    "description": "The label for the doc item Web3 Game Example in sidebar develop, linking to the doc develop/dapps/tutorials/building-web3-game"
+  },
+  "sidebar.develop.doc.React Apps": {
+    "message": "تطبيقات React",
+    "description": "The label for the doc item React Apps in sidebar develop, linking to the doc develop/dapps/ton-connect/react"
+  },
+  "sidebar.develop.doc.HTML/JS Apps": {
+    "message": "تطبيقات HTML/JS",
+    "description": "The label for the doc item HTML/JS Apps in sidebar develop, linking to the doc develop/dapps/ton-connect/web"
+  },
+  "sidebar.develop.doc.Telegram Bots JS": {
+    "message": "روبوتات Telegram (JS)",
+    "description": "The label for the doc item Telegram Bots JS in sidebar develop, linking to the doc develop/dapps/ton-connect/tg-bot-integration"
+  },
+  "sidebar.develop.doc.Telegram Bots Python": {
+    "message": "روبوتات Telegram (Python)",
+    "description": "The label for the doc item Telegram Bots Python in sidebar develop, linking to the doc develop/dapps/ton-connect/tg-bot-integration-py"
+  },
+  "sidebar.develop.doc.TON Connect Protocol": {
+    "message": "بروتوكول TON Connect",
+    "description": "The label for the doc item TON Connect Protocol in sidebar develop, linking to the doc develop/dapps/ton-connect/protocol/README"
+  },
+  "sidebar.develop.doc.Compilation Instructions": {
+    "message": "تعليمات التجميع",
+    "description": "The label for the doc item Compilation Instructions in sidebar develop, linking to the doc develop/howto/compile"
+  },
+  "sidebar.develop.doc.Instructions for low-memory machines": {
+    "message": "تعليمات للأجهزة ذات الذاكرة المنخفضة",
+    "description": "The label for the doc item Instructions for low-memory machines in sidebar develop, linking to the doc develop/howto/compile-swap"
+  },
+  "sidebar.participate.category.Wallets in TON": {
+    "message": "المحافظ في TON",
+    "description": "The label for category Wallets in TON in sidebar participate"
+  },
+  "sidebar.participate.category.Cross-chain Bridges": {
+    "message": "جسور السلاسل المتقاطعة",
+    "description": "The label for category Cross-chain Bridges in sidebar participate"
+  },
+  "sidebar.participate.category.Blockchain Nodes": {
+    "message": "عُقَد البلوكتشين",
+    "description": "The label for category Blockchain Nodes in sidebar participate"
+  },
+  "sidebar.participate.category.Network Infrastructure": {
+    "message": "البنية التحتية للشبكة",
+    "description": "The label for category Network Infrastructure in sidebar participate"
+  },
+  "sidebar.participate.category.TON DNS": {
+    "message": "نظام أسماء نطاقات TON",
+    "description": "The label for category TON DNS in sidebar participate"
+  },
+  "sidebar.participate.category.TON Proxy & Sites": {
+    "message": "وكيل TON والمواقع",
+    "description": "The label for category TON Proxy & Sites in sidebar participate"
+  },
+  "sidebar.participate.category.TON Storage": {
+    "message": "تخزين TON",
+    "description": "The label for category TON Storage in sidebar participate"
+  },
+  "sidebar.participate.doc.Overview": {
+    "message": "نظرة عامة",
+    "description": "The label for the doc item Overview in sidebar participate."
+  },
+  "sidebar.participate.doc.Bridges Addresses": {
+    "message": "عناوين الجسور",
+    "description": "The label for the doc item Bridges Addresses in sidebar participate."
+  },
+  "sidebar.contribute.category.Common Rules": {
+    "message": "القواعد العامة",
+    "description": "The label for category Common Rules in sidebar contribute"
+  },
+  "sidebar.contribute.category.Documentation": {
+    "message": "التوثيق",
+    "description": "The label for category Documentation in sidebar contribute"
+  },
+  "sidebar.contribute.category.Tutorials": {
+    "message": "الدروس",
+    "description": "The label for category Tutorials in sidebar contribute"
+  },
+  "sidebar.contribute.category.Archive": {
+    "message": "الأرشيف",
+    "description": "The label for category Archive in sidebar contribute"
+  },
+  "sidebar.contribute.category.Hacktoberfest 2022": {
+    "message": "Hacktoberfest 2022",
+    "description": "The label for category Hacktoberfest 2022 in sidebar contribute"
+  },
+  "sidebar.contribute.category.Localization Program": {
+    "message": "برنامج التعريب",
+    "description": "The label for category Localization Program in sidebar contribute"
+  },
+  "sidebar.contribute.doc.Overview": {
+    "message": "نظرة عامة",
+    "description": "The label for the doc item Overview in sidebar contribute, linking to the doc contribute/localization-program/overview"
+  },
+  "sidebar.contribute.doc.How It Works": {
+    "message": "كيف يعمل",
+    "description": "The label for the doc item How It Works in sidebar contribute, linking to the doc contribute/localization-program/how-it-works"
+  },
+  "sidebar.contribute.doc.How To Contribute": {
+    "message": "كيفية المساهمة",
+    "description": "The label for the doc item How To Contribute in sidebar contribute, linking to the doc contribute/localization-program/how-to-contribute"
+  },
+  "sidebar.contribute.doc.Translation Style Guide": {
+    "message": "دليل أسلوب الترجمة",
+    "description": "The label for the doc item Translation Style Guide in sidebar contribute, linking to the doc contribute/localization-program/translation-style-guide"
+  }
+}
