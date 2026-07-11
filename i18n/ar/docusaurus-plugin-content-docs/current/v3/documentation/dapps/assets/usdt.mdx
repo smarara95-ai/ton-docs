@@ -1,0 +1,56 @@
+import Feedback from '@site/src/components/Feedback';
+
+import Button from '@site/src/components/button';
+
+# USDT
+
+## Tether
+
+في [18 أبريل 2023](https://t.me/toncoin/824)، أطلقت Tether علنًا رمز USDT ‏(USD₮). راجع <a href="https://tether.to/en/" target="_blank" rel="noopener noreferrer">Tether</a>.
+
+على بلوكشين TON، يتم دعم USDT كـ [jetton](/v3/guidelines/dapps/asset-processing/jettons) استنادًا إلى [stablecoin contract](https://github.com/ton-blockchain/stablecoin-contract).
+
+:::info
+لدمج USDT الخاص بـ Tether على بلوكشين TON، استخدم عنوان jetton master التالي:
+[EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs](https://tonviewer.com/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?section=jetton)
+:::
+
+<Button href="/v3/guidelines/dapps/asset-processing/jettons" colorType={'primary'} sizeType={'sm'}>معالجة Jetton</Button>
+<Button href="https://github.com/ton-community/tma-usdt-payments-demo?tab=readme-ov-file#tma-usdt-payments-demo" colorType={'secondary'} sizeType={'sm'}>عرض توضيحي لمدفوعات TMA USDT</Button>
+
+## مزايا USDT على TON
+
+### تكامل سلس مع Telegram
+
+[USDT on TON](https://ton.org/borderless) يتكامل مع Telegram لتقديم تجربة سهلة الاستخدام لتحويلات USDT وDeFi.
+
+### رسوم معاملات أقل
+
+تُحسب رسوم تحويلات USDT على Ethereum بشكل ديناميكي اعتمادًا على حمولة الشبكة. ولهذا السبب قد تصبح المعاملات مكلفة.
+
+```cpp
+transaction_fee = gas_used * gas_price
+```
+
+- `gas_used` هو مقدار الغاز المستخدم أثناء تنفيذ المعاملة.
+- `gas_price` هو تكلفة وحدة الغاز الواحدة بوحدة Gwei، ويُحسب ديناميكيًا.
+
+في المقابل، يبلغ متوسط الرسوم لإرسال أي كمية من USDT على بلوكشين TON حاليًا نحو 0.0145 TON. وحتى إذا ارتفع سعر TON مئة مرة، فستظل المعاملات شديدة الانخفاض في التكلفة. راجع [متوسط تكلفة المعاملة](/v3/documentation/smart-contracts/transaction-fees/fees#average-transaction-cost).
+
+### سريع وقابل للتوسع
+
+تُمكّن الإنتاجية العالية لـ TON وأوقات التأكيد السريعة من تنفيذ معاملات USDT بسرعة.
+
+## تفاصيل متقدمة
+
+:::caution IMPORTANT
+على بلوكشين TON، يمكن لعدة Jettons أن تشترك في الاسم نفسه؛ وقد يبدو Jetton مزيّف مطابقًا تمامًا لـ USDT الحقيقي لكنه بلا قيمة. تحقّق من الشرعية عبر تأكيد عنوان jetton master.
+
+راجع [التوصيات](/v3/guidelines/dapps/asset-processing/jettons) المهمة.
+:::
+
+## أنظر أيضًا
+
+- [معالجة المدفوعات](/v3/guidelines/dapps/asset-processing/payments-processing)
+
+<Feedback />

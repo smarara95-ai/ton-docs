@@ -1,0 +1,80 @@
+import Feedback from '@site/src/components/Feedback';
+
+
+# مقدمة
+
+**الشبكة المفتوحة (TON)** هي منصة لامركزية مصممة لتشغيل إنترنت مملوك للمستخدم.
+تجمع بين تقنيات رئيسية — _TON Blockchain وTON DNS وTON Storage وTON Sites_ وTON Proxy — في نظام بيئي متماسك واحد.
+
+**TON Blockchain** هو جوهر TON، وقد تم بناؤه كحاسوب فائق موزع يشغّل الخدمات والتطبيقات لإنترنت لامركزي. يهدف إلى دعم ملايين المستخدمين والتطبيقات حول العالم.
+
+ابدأ استكشاف TON من خلال نقاط الدخول الرئيسية.
+افهم البلوكتشين، اكتشف التطبيقات الأساسية، قارن مع Ethereum، أو تعمق في موارد التعلم.
+
+<div style={{
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: '1.25rem',
+  marginTop: '1.5rem'
+}}>
+
+  {[
+    {
+      title: 'TON Blockchain',
+      desc: 'اكتشف أسس TON.<br> استكشف العناوين والتخزين والتقسيم (sharding).<br> قارن مع سلاسل أخرى وراجع مراجعات الأمان.',
+      link: '/v3/concepts/dive-into-ton/ton-blockchain/overview',
+      btn: 'استكشف TON Blockchain'
+    },
+    {
+      title: 'TON Ecosystem',
+      desc: 'اكتشف التطبيقات الأساسية في نظام TON البيئي.<br> تعرّف على كيفية عمل المحافظ والمستكشفات (explorers).<br> شاهد ما الذي يشغّل تفاعل المستخدم.' ,
+      link: '/v3/concepts/dive-into-ton/ton-ecosystem/wallet-apps',
+      btn: 'استكشف نظام TON البيئي'
+    },
+    {
+      title: 'TON مقابل Ethereum',
+      desc: 'قارن بين نظامي TON وEthereum البيئيين.<br> استكشف الاختلافات في لغات العقود.<br> افهم كيفية عمل TVM وEVM.',
+      link: '/v3/concepts/dive-into-ton/go-from-ethereum/difference-of-blockchains',
+      btn: 'استكشف الاختلافات'
+    },
+    {
+      title: 'الموارد التعليمية',
+      desc: 'استكشف الفيديوهات والمقالات وأدوات المجتمع.<br> ابدأ بأساسيات البلوكتشين.<br> خذ دورة كاملة في تطوير TON.',
+      link: '/v3/concepts/educational-resources',
+      btn: 'ابدأ التعلم'
+    }
+  ].map(({ title, desc, link, btn }) => (
+    <div
+      key={title}
+      style={{
+        border: '1px solid #e5e7eb',
+        borderRadius: '0.75rem',
+        padding: '0.9rem 1rem',
+        backgroundColor: 'var(--card-bg)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'start',
+        gap: '0.75rem',
+        height: '100%',
+        color: 'var(--text-color)'
+      }}
+    >
+      <h3 style={{ fontSize: '1rem', fontWeight: '600', margin: 0 }}>{title}</h3>
+      <p style={{ fontSize: '0.84rem', lineHeight: '1.45', margin: 0 }} dangerouslySetInnerHTML={{ __html: desc }} />
+      <a href={link} style={{
+        alignSelf: 'start',
+        padding: '0.4rem 0.75rem',
+        backgroundColor: 'var(--btn-bg)',
+        color: 'var(--btn-text)',
+        borderRadius: '0.5rem',
+        fontSize: '0.8rem',
+        textDecoration: 'none',
+        marginTop: 'auto'
+      }}>{btn}</a>
+    </div>
+  ))}
+</div>
+
+
+<Feedback />

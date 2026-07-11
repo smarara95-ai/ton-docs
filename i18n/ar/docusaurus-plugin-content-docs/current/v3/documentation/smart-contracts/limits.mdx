@@ -1,0 +1,122 @@
+# المعلمات والحدود
+
+تحتوي هذه الوثيقة على الحدود والمعلمات الحالية المستخدمة في TON blockchain.
+
+:::info
+يمكنك التحقق من جميع معلمات البلوكشين مباشرةً في المستكشفات: [Tonviewer](https://tonviewer.com/config) أو [Tonscan](https://tonscan.org/config).
+
+يمكن العثور على المعلمات المعرّفة في الشيفرة في [مستودع الشيفرة المصدرية](https://github.com/ton-blockchain/ton).
+:::
+
+## حدود الرسائل والمعاملات
+
+{/* &nbsp; represents a non-breaking space in HTML */}
+
+| الاسم                       | الوصف                                                         | القيمة   | النوع  | معرّف&nbsp;في                                                                                  |
+| -------------------------- | ------------------------------------------------------------- | -------- | ------ |-------------------------------------------------------------------------------------------------|
+| `max_size`                 | الحد الأقصى لحجم الرسالة الخارجية بالبايت                     | 65535    | uint32 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+| `max_depth`                | الحد الأقصى لعمق الرسالة الخارجية                              | 512      | uint16 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+| `max_msg_bits`             | الحد الأقصى لحجم الرسالة بالبت                                 | 2097152  | uint32 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+| `max_msg_cells`            | الحد الأقصى لعدد الخلايا التي يمكن أن تشغلها الرسالة           | 8192     | uint32 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+| `max_vm_data_depth`        | الحد الأقصى لعمق الخلية في الرسائل وفي سجلي `c4` و`c5`         | 512      | uint16 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+| `max_actions`              | الحد الأقصى لعدد الإجراءات                                     | 256      | uint32 | [transaction.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/transaction.h)   |
+| `max_library_cells`        | الحد الأقصى لعدد خلايا المكتبة                                 | 1000     | uint32 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+| `max_acc_state_cells`      | الحد الأقصى لعدد الخلايا التي يمكن أن تشغلها حالة الحساب       | 65536    | uint32 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+| `max_acc_state_bits`       | الحد الأقصى لحجم حالة الحساب بالبت                             | 67043328 | uint32 | [cells x size](/v3/concepts/dive-into-ton/ton-blockchain/cells)                                                                                |
+| `max_acc_public_libraries` | الحد الأقصى لعدد المكتبات العامة لكل حساب                      | 256      | uint32 | [mc-config.h](https://github.com/ton-blockchain/ton/blob/master/crypto/block/mc-config.h)       |
+
+## معلمات الغاز والرسوم
+
+| الاسم               | الوصف                                                                | القيمة   | النوع      | معرّف&nbsp;في |
+| ------------------- | -------------------------------------------------------------------- | -------- | ---------- | --------------- |
+| `free_stack_depth`  | عمق المكدس من دون استهلاك الغاز                                      | 32       | enum_value | [vm.h](https://github.com/ton-blockchain/ton/blob/master/crypto/vm/vm.h)            |
+| `runvm_gas_price`   | استهلاك الغاز عند بدء VM                                              | 40       | enum_value | [vm.h](https://github.com/ton-blockchain/ton/blob/master/crypto/vm/vm.h)            |
+| `flat_gas_limit`    | الغاز الأقل من `flat_gas_limit` يُوفَّر بسعر `flat_gas_price`         | 100      | uint64     | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `flat_gas_price`    | تكلفة تشغيل TON Virtual Machine                                       | 40000    | uint64     | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `gas_price`         | سعر الغاز في الشبكة بالنانو TON لكل 65536 وحدة غاز                   | 26214400 | uint64     | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `special_gas_limit` | الحد الأقصى للغاز لمعاملات العقود الخاصة (عقود النظام)               | 1000000  | uint64     | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `gas_limit`         | الحد الأقصى لكمية الغاز لكل معاملة                                    | 1000000  | uint64     | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `gas_credit`        | رصيد الغاز للتحقق من الرسائل الخارجية                                 | 10000    | uint64     | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `block_gas_limit`   | الحد الأقصى للغاز لكل كتلة                                             | 10000000 | uint64     | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+
+## رسوم وحدود التخزين
+
+| الاسم              | الوصف                                            | القيمة     | النوع  | معرّف&nbsp;في                                                                     |
+| ------------------ | ------------------------------------------------ | ---------- | ------ |-------------------------------------------------------------------------------------|
+| `freeze_due_limit` | رسوم التخزين (nanotons) اللازمة لتجميد العقد     | 100000000  | uint64 | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `delete_due_limit` | رسوم التخزين (nanotons) اللازمة لحذف العقد       | 1000000000 | uint64 | [config21](/v3/documentation/network/config-params/overview#param-20-and-21)        |
+| `bit_price_ps`     | سعر تخزين بت واحد لمدة 65536 ثانية               | 1          | uint64 | [config18](/v3/documentation/network/config-params/overview#param-18)                                                                    |
+| `cell_price_ps`    | سعر تخزين خلية واحدة لمدة 65536 ثانية            | 500        | uint64 | [config18](/v3/documentation/network/config-params/overview#param-18)               |
+
+## حدود حجم الكتلة
+
+| الاسم                 | الوصف                                           | القيمة   | النوع  | معرّف&nbsp;في |
+| --------------------- | ----------------------------------------------- | -------- | ------ | --------------- |
+| `bytes_underload`     | حد حجم الكتلة في حالة underload                 | 131072   | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `bytes_soft_limit`    | الحد المرن لحجم الكتلة                           | 524288   | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `bytes_hard_limit`    | الحد الأقصى المطلق لحجم الكتلة بالبايت           | 1048576  | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `gas_underload`       | حد غاز الكتلة في حالة underload                 | 2000000  | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `gas_soft_limit`      | الحد المرن لغاز الكتلة                           | 10000000 | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `gas_hard_limit`      | الحد الأقصى المطلق لغاز الكتلة                   | 20000000 | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `lt_delta_underload`  | حد فرق الوقت المنطقي في حالة underload          | 1000     | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `lt_delta_soft_limit` | الحد المرن لفرق الوقت المنطقي                    | 5000     | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `lt_delta_hard_limit` | الحد الأقصى المطلق لفرق الوقت المنطقي            | 10000    | uint32 | [config23](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+
+## تكاليف تمرير الرسائل
+
+| الاسم        | الوصف                                                  | القيمة     | النوع  | معرّف&nbsp;في |
+| ------------ | ------------------------------------------------------ | ---------- | ------ | --------------- |
+| `lump_price` | السعر الأساسي لتمرير الرسالة                           | 400000     | uint64 | [config25](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+| `bit_price`  | التكلفة لكل 65536 بت من تمرير الرسالة                  | 26214400   | uint64 | [config25](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+| `cell_price` | التكلفة لكل 65536 خلية لتمرير الرسالة                  | 2621440000 | uint64 | [config25](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+| `ihr_factor` | معامل تكلفة التوجيه الفوري عبر hypercube               | 98304      | uint32 | [config25](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+| `first_frac` | الكسر الخاص بأول انتقال في مسار الرسالة               | 21845      | uint32 | [config25](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+| `next_frac`  | الكسر الخاص بالانتقالات اللاحقة في مسار الرسالة       | 21845      | uint32 | [config25](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+
+## معلمات خاصة بـ MasterChain
+
+| الاسم                    | الوصف                                               | القيمة      | النوع  | معرّف&nbsp;في                                                                         |
+| ------------------------ | --------------------------------------------------- | ----------- | ------ |-----------------------------------------------------------------------------------------|
+| `mc_bit_price_ps`        | سعر تخزين بت واحد لمدة 65536 ثانية                  | 1000        | uint64 | [config18](/v3/documentation/network/config-params/overview#param-18)                   |
+| `mc_cell_price_ps`       | سعر تخزين خلية واحدة لمدة 65536 ثانية               | 500000      | uint64 | [config18](/v3/documentation/network/config-params/overview#param-18)                   |
+| `mc_flat_gas_limit`      | الغاز الأقل من `flat_gas_limit` على MasterChain    | 100         | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_flat_gas_price`      | تكلفة تشغيل VM على MasterChain                     | 1000000     | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_gas_price`           | سعر الغاز على MasterChain                          | 655360000   | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_special_gas_limit`   | حد غاز العقود الخاصة على MasterChain               | 70000000    | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_gas_limit`           | الحد الأقصى للغاز لكل معاملة على MasterChain       | 1000000     | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_gas_credit`          | رصيد الغاز للتحقق من الرسائل الخارجية              | 10000       | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_block_gas_limit`     | الحد الأقصى للغاز لكل كتلة في MasterChain          | 2500000     | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_freeze_due_limit`    | رسوم التخزين اللازمة لتجميد العقد                  | 100000000   | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_delete_due_limit`    | رسوم التخزين اللازمة لحذف العقد                    | 1000000000  | uint64 | [config20](/v3/documentation/network/config-params/overview#param-20-and-21)            |
+| `mc_bytes_underload`     | حد حجم الكتلة في حالة underload                    | 131072      | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)            |
+| `mc_bytes_soft_limit`    | الحد المرن لحجم الكتلة                              | 524288      | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)            |
+| `mc_bytes_hard_limit`    | الحد الأقصى المطلق لحجم الكتلة بالبايت              | 1048576     | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)            |
+| `mc_gas_underload`       | حد غاز الكتلة في حالة underload                    | 200000      | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)            |
+| `mc_gas_soft_limit`      | الحد المرن لغاز الكتلة                              | 1000000     | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)            |
+| `mc_gas_hard_limit`      | الحد الأقصى المطلق لغاز الكتلة                      | 2500000     | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)            |
+| `mc_lump_price`          | السعر الأساسي لتمرير الرسالة                        | 10000000    | uint64 | [config24](/v3/documentation/network/config-params/overview#param-24-and-25)            |
+| `mc_bit_price`           | التكلفة لكل 65536 بت من تمرير الرسالة               | 655360000   | uint64 | [config24](/v3/documentation/network/config-params/overview#param-24-and-25)            |
+| `mc_cell_price`          | التكلفة لكل 65536 خلية لتمرير الرسالة               | 65536000000 | uint64 | [config24](/v3/documentation/network/config-params/overview#param-24-and-25)            |
+| `mc_ihr_factor`          | معامل تكلفة التوجيه الفوري عبر hypercube            | 98304       | uint32 | [config24](/v3/documentation/network/config-params/overview#param-24-and-25)            |
+| `mc_first_frac`          | الكسر الخاص بأول انتقال في مسار الرسالة            | 21845       | uint32 | [config24](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+| `mc_next_frac`           | الكسر الخاص بالانتقالات اللاحقة في المسار          | 21845       | uint32 | [config24](/v3/documentation/network/config-params/overview#param-24-and-25)        |
+| `mc_lt_delta_underload`  | حد فرق الوقت المنطقي في حالة underload             | 1000        | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)            |
+| `mc_lt_delta_soft_limit` | الحد المرن لفرق الوقت المنطقي                       | 5000        | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `mc_lt_delta_hard_limit` | الحد الأقصى المطلق لفرق الوقت المنطقي               | 10000       | uint32 | [config22](/v3/documentation/network/config-params/overview#param-22-and-23)        |
+| `mc_catchain_lifetime`   | عمر مجموعات catchain في MasterChain بالثواني       | 250         | uint32 | [config28](/v3/documentation/network/config-params/overview#param-28)                                                                           |
+
+## معلمات المدققين
+
+| الاسم                       | الوصف                                                  | القيمة     | النوع  | معرّف&nbsp;في |
+| --------------------------- | ------------------------------------------------------ | ---------- | ------ | --------------- |
+| `shard_catchain_lifetime`   | عمر مجموعات catchain في ShardChain بالثواني            | 250        | uint32 | [config28](/v3/documentation/network/config-params/overview#param-28)        |
+| `shard_validators_lifetime` | عمر مجموعة المدققين في ShardChain بالثواني             | 1000       | uint32 | [config28](/v3/documentation/network/config-params/overview#param-28)        |
+| `shard_validators_num`      | عدد المدققين في مجموعة التحقق الخاصة بـ ShardChain     | 23         | uint32 | [config28](/v3/documentation/network/config-params/overview#param-28)        |
+| `masterchain_block_fee`     | مكافأة إنشاء الكتلة                                    | 1700000000 | Grams  | [config14](/v3/documentation/network/config-params/overview#param-14)        |
+| `basechain_block_fee`       | رسوم كتلة BaseChain                                    | 1000000000 | Grams  | [config14](/v3/documentation/network/config-params/overview#param-14)        |
+
+## معلمات الوقت
+
+| الاسم         | الوصف                                        | القيمة | النوع     | معرّف&nbsp;في |
+| ------------- | -------------------------------------------- | ----- | -------- | --------------- |
+| `utime_since` | الطابع الزمني Unix الأولي لتطبيق السعر       | 0     | UnixTime | [config18](/v3/documentation/network/config-params/overview#param-14)        |

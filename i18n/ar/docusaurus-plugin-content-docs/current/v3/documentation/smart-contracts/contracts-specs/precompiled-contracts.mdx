@@ -1,0 +1,41 @@
+import Feedback from '@site/src/components/Feedback';
+
+# العقود المسبقة التجميع
+
+العقد الذكي _المسبق التجميع_ هو عقد يمتلك تنفيذًا بلغة C++ داخل العقدة. وعندما يعالج المدقق معاملة لهذا النوع من العقود، يمكنه تنفيذ هذا التنفيذ الأصلي بدلًا من TVM. وهذا يحسن الأداء ويقلل رسوم المعالجة.
+
+## الإعداد
+
+تُخزن قائمة العقود المسبقة التجميع في إعداد MasterChain:
+
+```tlb
+precompiled_smc#b0 gas_usage:uint64 = PrecompiledSmc;
+precompiled_contracts_config#c0 list:(HashmapE 256 PrecompiledSmc) = PrecompiledContractsConfig;
+_ PrecompiledContractsConfig = ConfigParam 45;
+```
+
+يمثل `list:(HashmapE 256 PrecompiledSmc)` تعيينًا من `(code_hash -> precompiled_smc)`. ويُعد العقد _مسبق التجميع_ إذا كان hash الشيفرة الخاص به موجودًا في هذه الخريطة.
+
+## تنفيذ العقد
+
+تتبع المعاملات الخاصة بالعقود الذكية المسبقة التجميع (تلك التي تكون hashes الشيفرة الخاصة بها موجودة في `ConfigParam 45`) مسار التنفيذ التالي:
+
+1. استرجاع قيمة `gas_usage` من إعداد masterchain
+2. إذا كان رصيد العقد لا يستطيع تغطية تكلفة `gas_usage`، تفشل مرحلة الحساب مع `cskip_no_gas`.
+3. يتابع التنفيذ عبر أحد المسارين التاليين:
+   - **تنفيذ TVM**: يُستخدم إذا كان تنفيذ precompiled معطلًا أو كان تنفيذ C++ غير متاح في إصدار العقدة. ينفذ TVM ضمن حدود gas المحددة بواسطة إعداد الشبكة (انظر [معلمات gas والرسوم](/v3/documentation/smart-contracts/limits#gas-and-fee-parameters) و[Param20/Param21](/v3/documentation/network/config-params/overview#param-20-and-21)).
+   - **تنفيذ أصلي**: يُستخدم عندما يكون تنفيذ precompiled مفعّلًا ومتاحًا معًا، حيث تُنفذ شيفرة C++ مباشرة
+4. تُستبدل قيم مرحلة الحساب:
+   - يُضبط `gas_used` على `gas_usage`
+   - تُضبط `vm_steps` و`vm_init_state_hash` و`vm_final_state_hash` على الصفر
+5. تُحسب رسوم المعالجة بناءً على `gas_usage` بدلًا من استهلاك TVM الفعلي للـ gas
+
+بالنسبة إلى العقود المسبقة التجميع، يحمل العنصر السابع عشر من `c7` (الفهرس `16`) قيمة `gas_usage` المسبقة التجميع للعقد الحالي كما هي معرفة في `ConfigParam 45`؛ راجع [c7](/v3/documentation/tvm/changelog/tvm-upgrade-2024-04#c7). إن opcode `GETPRECOMPILEDGAS` محجوز حاليًا ويعيد `null`؛ وعند تفعيله، سيعيد مقدار gas usage للعقد المسبق التجميع؛ راجع [new opcodes](/v3/documentation/tvm/changelog/tvm-upgrade-2024-04#new-opcodes). أما العقود غير المسبقة التجميع فتعيد `null` لهذه القيمة.
+
+**ملاحظة**: فعّل تنفيذ العقود المسبقة التجميع عبر تشغيل `validator-engine` مع العلامة التجريبية [`--enable-precompiled-smc`](/v3/documentation/nodes/mytonctrl/commands#advanced-options). وتنتج كلتا طريقتي التنفيذ معاملات متطابقة، ما يسمح للمدققين الذين لديهم تنفيذات C++ والذين لا يملكونها بالتعايش داخل الشبكة. ويتيح ذلك اعتمادًا تدريجيًا عند إضافة إدخالات جديدة إلى `ConfigParam 45`.
+
+## انظر أيضًا
+
+- [عقود الحوكمة](/v3/documentation/smart-contracts/contracts-specs/governance)
+
+<Feedback />

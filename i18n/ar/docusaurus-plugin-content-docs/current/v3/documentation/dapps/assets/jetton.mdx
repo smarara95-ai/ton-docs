@@ -1,0 +1,46 @@
+import Feedback from '@site/src/components/Feedback';
+
+import Button from '@site/src/components/button'
+
+# جتون
+
+الجتونات هي أصول رقمية تمثل رموزًا قابلة للاستبدال ضمن منظومة TON، كما هو محدد في [معيار Jettons](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md).
+
+الجتونات هي رموز لامركزية تعمل على TON، وتتجنب نقاط الفشل والاختناقات الواحدة. يتم تخزين رصيد جتون كل مستخدم في عقد محفظة جتون منفصل.
+تتفاعل العقود الذكية مباشرة مع بعضها البعض، مما يوزع الحمل عبر الشبكة بأكملها.
+مع زيادة عدد المستخدمين والمعاملات، تحافظ الشبكة على توزيع متساوٍ للحمل، مما يسمح بقابلية التوسع بسهولة.
+
+فيما يلي، يمكنك العثور على التوثيقات والأدوات وأفضل الممارسات لدمج جتونات في تطبيقك اللامركزي.
+
+## الأدلة الإرشادية
+
+- [معالجة جتون TON](/v3/guidelines/dapps/asset-processing/jettons)
+
+## دروس المجتمع
+
+- [دليل لعبة Web3](/v3/guidelines/dapps/tutorials/web3-game-example) — تعلّم كيفية بناء لعبة Web3 باستخدام بلوكشين TON.
+- [سك أول جتون لك](/v3/guidelines/dapps/tutorials/mint-your-first-token/) — تعلّم كيفية نشر وتخصيص أول جتون لك.
+- [\[يوتيوب\] مؤسسا TON Keeper أوليغ أندرييف وأوليغ إلاريونوف عن جتون TON](https://www.youtube.com/watch?v=oEO29KmOpv4).
+- [Tonspeedrun](https://tonspeedrun.tapps.ninja/)
+
+## العقود الذكية
+
+- [تنفيذ العقود الذكية (FunC)](https://github.com/ton-blockchain/token-contract/)
+
+## أدوات نشر الجتون
+
+الجتونات هي رموز مخصصة قابلة للاستبدال على بلوكشين TON. يمكنك إنشاء الرمز الخاص بك على البلوكشين باستخدام مثال Jetton Deployer أدناه:
+
+- [TON Minter](https://minter.ton.org/) — تطبيق مفتوح المصدر لنشر الجتونات
+- [عقود Jetton Deployer](https://github.com/ton-defi-org/jetton-deployer-contracts) (FunC, TL-B)
+- [الواجهة الإلكترونية لـ Jetton Deployer](https://github.com/ton-defi-org/jetton-deployer-webclient) (React, TypeScript)
+
+## أدوات للعمل مع الجتونات
+
+- [عقد بيع NFT مع جتون](https://github.com/dvlkv/nft-jetton-sale-smc) — عقد لبيع NFT يدعم الجتونات
+
+## أنظر أيضًا
+
+- [معالجة الجتون](/v3/guidelines/dapps/asset-processing/jettons)
+
+<Feedback />

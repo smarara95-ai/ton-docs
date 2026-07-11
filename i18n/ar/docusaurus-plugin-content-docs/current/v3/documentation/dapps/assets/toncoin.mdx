@@ -1,0 +1,31 @@
+import Feedback from '@site/src/components/Feedback';
+
+# تونكوين
+
+العملة الرقمية الأصلية لمنظومة TON هي **Toncoin**. تُدفع رسوم المعاملات ورسوم الغاز ورسوم التخزين باستخدام Toncoin. ويُستخدم Toncoin في التخزين المرهون لتصبح مدققًا.
+
+- وُصفت عملية إجراء مدفوعات Toncoin في [معالجة المدفوعات](/v3/guidelines/dapps/asset-processing/payments-processing).
+- يمكنك معرفة أماكن شراء Toncoin أو مبادلته على [صفحة Toncoin](https://ton.org/coin).
+
+## بنية عملة Toncoin
+
+تم دمج Toncoin في الطبقة الأساسية من بروتوكول بلوكشين TON.
+
+```tlb
+
+account$1 addr:MsgAddressInt storage_stat:StorageInfo
+          storage:AccountStorage = Account;
+
+account_storage$_ last_trans_lt:uint64
+    balance:CurrencyCollection state:AccountState 
+  = AccountStorage;
+  
+```
+
+لكل حساب رصيد مرتبط بوحدة nanoTON ‏(1 TON = 1,000,000,000 nanoTON). وبفضل هذا الحساب، يحتفظ كل حساب بقيمة `balance` الخاصة به حتى بدون عقد منشور.
+
+## أنظر أيضًا
+
+- [نظرة عامة على معالجة الأصول](/v3/documentation/dapps/assets/overview/)
+
+<Feedback />

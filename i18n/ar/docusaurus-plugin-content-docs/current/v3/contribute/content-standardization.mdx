@@ -1,0 +1,638 @@
+import Feedback from '@site/src/components/Feedback';
+import ThemedImage from "@theme/ThemedImage";
+import { BlockMath, InlineMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+
+
+# توحيد المحتوى
+
+## مقدمة
+
+يهدف هذا الدليل الإرشادي إلى الحفاظ على أسلوب موحّد للوثائق ومساعدة المساهمين على توحيد محتواهم بحيث يندمج بسلاسة في الوثائق.
+
+## تفضيلات النص
+
+### استخدم الإنجليزية الأمريكية
+
+بالنسبة للكلمات التي لها أكثر من إملاء واحد، استخدم الإنجليزية الأمريكية بدلًا من البريطانية.
+
+أمثلة:
+
+- "decentralized" بدلًا من "decentralised"
+- "color" بدلًا من "colour"
+- "analyze" بدلًا من "analyse"
+
+### استخدم صيغة المضارع
+
+استخدم صيغة المضارع لوصف السلوك العام، والوظائف الحالية، والتعليمات خطوة بخطوة.
+هذا يجعل الوثائق واضحة وسهلة المتابعة.
+
+**أمثلة:**
+- يقدّم هذا الدليل الإرشادي نظرة عامة على عملية المساهمة.
+- يتحقق النظام من تنسيق الملف ويعرض خطأً إذا كان غير صالح.
+
+*تجنّب صيغة المستقبل أو الماضي للإجراءات الفورية أو المعتادة.*
+
+*تجنّب:*
+- سيتحقق النظام من تنسيق الملف.
+- نقر المستخدم على الزر.
+
+### متى تُستخدم صيغتا المستقبل أو الماضي
+
+صيغة المضارع هي المعيار، لكن يُسمح بصيغتي المستقبل والماضي في حالات محددة.
+
+**صيغة المستقبل:** للإجراءات التي تحدث لاحقًا، بعد شرط أو تأخير.
+
+**أمثلة:**
+- بعد الإعداد، سيرسل النظام رسالة تأكيد بالبريد الإلكتروني.
+- إذا فشلت عملية الدفع، سيحصل المستخدم على إشعار.
+
+*تجنّب صيغة المستقبل للسلوك الفوري أو الميزات غير المُصدرة بعد. كما تجنّب استخدام "would".*
+
+*تجنّب:*
+- سيتحقق النظام من تنسيق الملف.
+- ستُرجع الواجهة البرمجية (API) خطأً.
+
+**صيغة الماضي:** لوصف الأحداث الماضية مثل سجلات التغييرات (changelogs) أو السجلات (logs).
+
+**أمثلة:**
+- أصلح الإصدار 2.1 مشكلة في التحقق.
+- قدّم المستخدم النموذج في الساعة 2 مساءً وحصل على خطأ 500.
+
+*تجنّب صيغة الماضي في الوثائق العامة — فقد تُوحي بأن المعلومات قديمة.*
+
+*تجنّب:*
+- تحقق النظام من موقع المستخدم.
+- نقر المستخدم على الزر.
+
+### استخدم صيغة المبني للمعلوم
+
+الجمل التي تستخدم صيغة المبني للمعلوم أكثر إيجازًا وفعالية، مما يجعل كتابتك أكثر جاذبية وأسهل فهمًا.
+
+**جملة بصيغة المبني للمعلوم:** فاعل يقوم بفعل على هدف
+
+> _"عالج العقد الذكي رسالة."_
+
+**جملة بصيغة المبني للمجهول:** هدف يتلقى فعل الفاعل
+
+> _"تمت معالجة الرسالة بواسطة العقد الذكي."_
+
+[اقرأ المزيد حول صيغة المبني للمعلوم](https://www.grammarly.com/blog/active-vs-passive-voice/)
+
+_هذا ليس أمرًا سهلًا، خصوصًا لغير الناطقين بالإنجليزية كلغة أم. إذا لم تكن متأكدًا، لا تقلق. سنساعدك في أي من هذه الحالات._
+
+### القواعد اللغوية
+
+تستخدم هذه الوثائق أداة [cspell](https://cspell.org/) للتحقق من الإملاء أثناء التطوير.
+
+ستتحقق أداة `cspell` من الإملاء وتقترح تصحيحات تلقائيًا في حال وجود أخطاء قبل إنشاء التزام (commit) جديد. لا تتردد في إضافة كلمات محددة إلى ملف إعداد [cspell.json](https://github.com/ton-community/ton-docs/blob/main/cspell.json) وتضمينها في قاموس التحقق.
+
+### تنسيق التاريخ
+
+استخدم تنسيق **"Mon D, YYYY"**. يُعد هذا النهج معيارًا للقراء الأمريكيين، ويكتب اسم الشهر كاملًا (أو يستخدم اختصارًا من ثلاثة أحرف)، ويقلل من الالتباس مع ترتيب اليوم والشهر.
+
+#### التنسيق المفضّل:
+
+- Nov 2, 2023
+- Feb 11, 2023
+
+#### التنسيق غير الصحيح:
+
+- 2-Nov-2023
+- 11/2/2023
+- 2/11/2023
+
+يؤدي الالتزام بهذه الإرشادات إلى نهج موحّد لعرض التواريخ، مما يعزز الوضوح والفهم في جميع أنحاء وثائق TON.
+
+### استخدام الرموز التعبيرية والأيقونات
+
+#### في قسم الوثائق:
+- تجنّب استخدام الرموز التعبيرية والأيقونات الزخرفية.
+- يجب أن تكون الوثائق التقنية واضحة، واحترافية، وخالية من عوامل التشتيت.
+- استخدم فقط عناصر التنسيق القياسية مثل العناوين والقوائم وكتل الكود.
+
+#### في قسم الإرشادات:
+- يُسمح باستخدام الرموز التعبيرية والأيقونات لجعل المحتوى أكثر جاذبية وودّية.
+- استخدمها بشكل مقصود ومتسق، مع تفضيل الأيقونات الوظيفية مثل ✅ نجاح، ⚠️ تحذير، ❌ خطأ.
+- استخدم الأيقونات دائمًا مع نص داعم — لا تعتمد على الأيقونات وحدها لنقل المعنى.
+- تجنّب الرموز التعبيرية المفرطة في الزخرفة أو العاطفية التي لا تضيف معنى.
+- عند الشك، تخطَّ الأيقونة. الوضوح والاتساق والحياد يأتون أولًا.
+
+
+## تفضيلات الروابط
+
+### الربط بالصفحات الداخلية
+
+استخدم مسارًا نسبيًا للموقع (متجذّرًا من "/") بدلًا من عنوان URL كامل عند الربط بصفحة أخرى في وثائق TON.
+
+#### رابط صحيح:
+
+```md
+Read more about [smart contracts](/v3/documentation/smart-contracts/overview/)
+```
+
+#### رابط غير صحيح:
+
+```md
+Read more about [smart contracts](https://docs.ton.org/v3/documentation/smart-contracts/overview)
+```
+
+لا تُدرج مسار اللغة كنص ثابت (على سبيل المثال، `/zh-CN/`) في أي روابط. هذا يحافظ على القدرة المتسقة عبر نسخ اللغات المختلفة للموقع.
+
+#### رابط صحيح:
+
+```md
+Read more about [smart contracts](/v3/documentation/smart-contracts/overview/)
+```
+
+#### رابط غير صحيح:
+
+```md
+Read more about [smart contracts](/zh-CN/v3/documentation/smart-contracts/overview)
+```
+
+ضع شرطة مائلة زائدة (trailing slash) في نهاية روابط الوثائق الداخلية لتجنّب عمليات إعادة التوجيه (redirects)، التي تضر بأداء الموقع.
+
+#### رابط صحيح:
+
+```md
+Read more about [smart contracts](/v3/documentation/smart-contracts/overview/)
+```
+
+#### رابط غير صحيح:
+
+```md
+Read more about [smart contracts](/v3/documentation/smart-contracts/overview)
+```
+
+### مؤلفو المقالات
+
+عند الاستشهاد بمقالات من مؤلف أو منظمة معينة، استخدم اسم المقالة كرابط، متبوعًا بشرطة em واسم المؤلف بخط مائل.
+
+#### وصف صحيح:
+
+```md
+- [How to shard your TON smart contract and why](https://blog.ton.org/how-to-shard-your-ton-smart-contract-and-why-studying-the-anatomy-of-tons-jettons) — _Tal Kol_
+- [TON Teleport BTC Whitepaper](https://tgbtc.gitbook.io/docs/whitepaper/abstract) — _RSquad Blockchain Lab_
+```
+
+#### وصف غير صحيح:
+
+```md
+- [How to shard your TON smart contract and why](https://blog.ton.org/how-to-shard-your-ton-smart-contract-and-why-studying-the-anatomy-of-tons-jettons)
+- [TON Teleport BTC Whitepaper](https://tgbtc.gitbook.io/docs/whitepaper/abstract) by RSquad Blockchain Lab
+```
+
+### قسم "انظر أيضًا" للروابط
+
+أدرج الموارد ذات الصلة في صفحتك ضمن قسم H2 بعنوان `## See also`.
+
+يوجّه هذا القسم القراء إلى مواد إضافية ويدعم رحلة متماسكة للمطوّر.
+
+#### مثال:
+
+```md
+## See also
+
+- [Style guide](/v3/contribute/style-guide/)
+- [Typography](/v3/contribute/typography/)
+```
+
+## تفضيلات الصور
+
+### الربط بالصور
+
+عند إضافة صورة إلى صفحة، قم بتنزيلها ووضعها في مجلد `static/img` الخاص بوثائق TON.
+
+#### ربط صحيح:
+
+```md
+![jetton_transfer](/img/docs/asset-processing/jetton_transfer.png)
+```
+
+#### ربط غير صحيح:
+
+```md
+![tact_logo](https://docs.tact-lang.org/_astro/logomark-dark.BSmgZYWc_ZKRrUl.svg)
+```
+
+هذا مفيد لضمان توفّر الصورة.
+
+### أوضاع السمة الفاتحة والداكنة
+
+تدعم وثائق TON الصور الخاصة بالسمة (theme). اتبع هذه الخطوات لإضافة صور مرتبطة بالسمة إلى الصفحة.
+
+1. الوضع المرتبط بالسمة متاح فقط لملفات `.mdx`.
+
+2. استورد وحدة `ThemedImage` في الترويسة (header).
+
+```mdx
+import ThemedImage from "@theme/ThemedImage";
+```
+
+3. حدّد روابط كلتا الصورتين وفقًا للمثال:
+
+```mdx
+<br />
+<ThemedImage
+  alt="Message delivery diagram"
+  sources={{
+    light: '/img/docs/message-delivery/message_delivery_2.svg?raw=true',
+    dark: '/img/docs/message-delivery/message_delivery_2_dark.svg?raw=true',
+  }}
+/>
+<br />
+```
+
+### مواصفات التعليقات التوضيحية (Annotation)
+
+لتصوير معالجة الرسائل، استخدم تمثيلًا رسوميًا يشبه رسمًا بيانيًا للعقد الذكي، بما في ذلك تسميات للمعاملات والرسائل.
+
+إذا لم يكن ترتيب المعاملات ضروريًا، احذف تسمياتها. يُبسّط هذا النهج الرسم التخطيطي، ويجعل قراءة وفهم تفاصيل الرسالة والعقد أسهل.
+
+### عناصر التعليقات التوضيحية الأساسية
+
+<ThemedImage
+  alt="Message processing diagram"
+  sources={{
+    light:
+      "/img/docs/scheme-templates/message-processing-graphs/Graphic-Explanations-Guidelines_1.png?raw=true",
+    dark: "/img/docs/scheme-templates/message-processing-graphs/Graphic-Explanations-Guidelines_1_dark.png?raw=true",
+  }}
+/>
+
+- تجنّب استخدام مجموعة كبيرة ومتنوعة من الألوان الزاهية.
+- عدّل الأشكال بتطبيق تقنيات مثل الحدود المتقطعة.
+- لإبراز تفاصيل محددة، اعرض المعاملات باستخدام أنماط خطوط مميزة (مثل الخط المتصل والمتقطع).
+
+### مخططات معالجة الرسائل
+
+على بلوك تشين TON، يُعد تقديم شروحات واضحة لسلوك الفاعلين ومعالجة الرسائل لمختلف العقود الذكية والسيناريوهات الأساسية أمرًا ضروريًا.
+
+توفّر مخططات معالجة الرسائل سياقًا إضافيًا للقراء الباحثين عن فهم واضح لسلوك الفاعلين. يجب توحيد هذه المخططات في جميع أنحاء وثائق TON لضمان أقصى درجات الوضوح.
+
+#### مثال
+
+<ThemedImage
+  alt="Message delivery flow"
+  sources={{
+    light: "/img/docs/message-delivery/message_delivery_2.png?raw=true",
+    dark: "/img/docs/message-delivery/message_delivery_2_dark.png?raw=true",
+  }}
+/>
+
+### مخطط التسلسل (Sequence diagram)
+
+استخدم مخطط تسلسل للمخططات المعقدة والمتكررة للتواصل بين 2-3 فاعلين. بالنسبة للرسائل، استخدم تدوين سهم الرسالة المتزامن النموذجي.
+
+#### مثال
+
+<div className="text--center">
+  <ThemedImage
+    alt="Message sequence diagram"
+    sources={{
+      light: "/img/docs/message-delivery/message_delivery_7.png?raw=true",
+      dark: "/img/docs/message-delivery/message_delivery_7_dark.png?raw=true",
+    }}
+  />
+</div>
+
+### تنسيقات وألوان المخططات
+
+#### التنسيق:
+
+- استخدم تنسيق PNG للمخططات في الوثائق لضمان وضوح القراءة على مختلف الأجهزة.
+
+#### الخطوط:
+
+- استخدم عائلة خط [Inter](https://rsms.me/inter/) لجميع النصوص داخل المخططات.
+- حافظ على حجم نص متسق.
+- تجنّب الإفراط في استخدام تنسيقي **الخط العريض** و_المائل_ لتحقيق أفضل سهولة قراءة.
+
+#### ألوان السمة للوضع الفاتح:
+
+- Pencil Hand Drawn، سمة Visio الافتراضية.
+
+#### ألوان السمة للوضع الداكن:
+
+- الخط `#e3e3e3`.
+- الخلفية `#232328`.
+- الإبراز الفاتح، الأسهم وحدود المخططات `#058dd2`.
+- الإبراز الداكن، الأسهم وحدود المخططات `#0088cc`.
+- الخلفية الداخلية (InnerBackGround)، للكتل المتداخلة `#333337`.
+
+#### سياسة التحكم بالإصدارات:
+
+- خزّن الملفات الأصلية تحت `/static/schemes-visio` لتسهيل التعديلات المستقبلية.
+- تعرَّف على مراجع [Visio](https://www.microsoft.com/en-us/microsoft-365/visio/flowchart-software) مباشرة من [مصادر Visio](https://github.com/ton-community/ton-docs/tree/main/static/schemes-visio/).
+
+
+## المعادلات الرياضية
+
+لتضمين تعبيرات رياضية في الوثائق، استخدم مكتبة [react-katex](https://katex.org/docs/supported). تدعم كلًا من الرياضيات المضمّنة (inline) والرياضيات على مستوى الكتلة باستخدام صياغة `LaTeX`.
+
+استورد المكوّنات المطلوبة في أعلى ملف `.mdx` الخاص بك:
+
+```mdx
+import { BlockMath, InlineMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+```
+
+تتيح لك هذه الاستيرادات عرض تعبيرات `LaTeX` الرياضية:
+- تُستخدم `BlockMath` للمعادلات المستقلة والمتمركزة.
+- تُستخدم `InlineMath` للتعبيرات القصيرة داخل النص العادي.
+- يطبّق استيراد `css` التنسيق اللازم للعرض الصحيح.
+
+يمكن للمساهمين استخدام الأمثلة التالية لتنسيق أنواع مختلفة من التعبيرات الرياضية في الوثائق:
+
+### أنظمة المعادلات
+
+بالنسبة لأنظمة المعادلات، استخدم تنسيق `LaTeX` للوضوح:
+
+```mdx
+<BlockMath math={`\begin{cases}
+x + y = 10 \\
+2x - y = 4
+\end{cases}`} />
+```
+
+يُعرض هذا نظام المعادلات كما يلي:
+
+<BlockMath math={`\begin{cases}
+x + y = 10 \\
+2x - y = 4
+\end{cases}`} />
+
+
+### الدوال الأسّية
+
+بالنسبة للدوال الأسّية، يمكنك استخدام التنسيق التالي:
+
+```mdx
+<InlineMath math="e^{x} = \\lim\\limits_{n\\to \\infty} \\left( 1 + \\frac{x}{n} \\right)^n" />
+```
+
+يُعرض هذا المعادلة: <InlineMath math="e^{x} = \\lim\\limits_{n\\to \\infty} \\left( 1 + \\frac{x}{n} \\right)^n" />
+
+
+### الكسور
+
+لتمثيل الكسور، استخدم `\frac{numerator}{denominator}`:
+
+```mdx
+<InlineMath math="\\frac{a}{b}"/>
+```
+
+يُعرض هذا الكسر: <InlineMath math="\\frac{a}{b}"/>
+
+### الجمع (Summation)
+
+بالنسبة لتدوين الجمع، استخدم تنسيق `LaTeX` التالي:
+
+```mdx
+<BlockMath math="\\sum_{i=1}^{n} i^2" />
+```
+
+يُعرض هذا الجمع: <BlockMath math="\\sum_{i=1}^{n} i^2" />
+
+### التعبيرات اللوغاريتمية
+
+بالنسبة للمعادلات اللوغاريتمية، استخدم صياغة `LaTeX` التالية:
+
+```mdx
+<InlineMath math="\\log_{b}(x)" />
+```
+
+يُعرض هذا التعبير اللوغاريتمي: <InlineMath math="\\log_{b}(x)" />
+
+
+## المصطلحات
+
+### TON
+
+يجب أن تُكتب TON دائمًا بأحرف كبيرة.
+
+**الاستخدام الصحيح:**
+
+- TON
+
+### TON مع كلمة
+
+- من الضروري ضمان الاستخدام الصحيح لأداة التعريف _THE_ في وثائق TON. _TON Blockchain_ و_TON Ecosystem_ مصطلحات تُكتب بأحرف كبيرة، وبالتالي، لا تحتاج إلى _THE_ في استخدامها.
+- نكتب _TON_ مع الأسماء العادية، وإذا تطلّب الأمر _THE_ وفقًا لقواعد اللغة الإنجليزية، فإننا نستخدمها. على سبيل المثال: "_The_ TON Connect _protocol_ is a..."
+
+**الاستخدام الصحيح:**
+
+- TON Blockchain
+- TON Ecosystem
+- The TON Connect protocol
+
+### TON Center
+
+**الاستخدام الصحيح:**
+
+- TON Center
+
+**الاستخدام غير الصحيح:**
+
+- Toncenter
+- TonCenter
+- TONcenter
+
+### Mainnet
+
+عند الإشارة إلى TON Mainnet (أي عدم الإشارة إلى Testnet)، استخدم الاسم العلم. تساعد الأسماء الخاصة في تجنّب الالتباس وبناء فهم أكبر.
+
+**الاستخدام الصحيح:**
+
+- Mainnet
+- TON Mainnet
+
+**الاستخدام غير الصحيح:**
+
+- main net
+- mainnet
+- Main net
+- TON mainnet
+
+### AccountChain
+
+**الاستخدام الصحيح:**
+
+- AccountChain
+
+**الاستخدام غير الصحيح:**
+
+- Account Chain
+- Accountchain
+
+### ShardChain
+
+**الاستخدام الصحيح:**
+
+- ShardChain
+
+**الاستخدام غير الصحيح:**
+
+- Shardchain
+- Shard Chain
+
+### WorkChain
+
+**الاستخدام الصحيح:**
+
+- WorkChain
+
+**الاستخدام غير الصحيح:**
+
+- Workchain
+- Work Chain
+
+### MasterChain
+
+**الاستخدام الصحيح:**
+
+- MasterChain
+
+**الاستخدام غير الصحيح:**
+
+- Masterchain
+- Master Chain
+
+### BaseChain
+
+**الاستخدام الصحيح:**
+
+- BaseChain
+
+**الاستخدام غير الصحيح:**
+
+- Basechain
+- Base Chain
+
+### Proof-of-work / Proof-of-stake
+
+يجب كتابة Proof-of-work بحرف كبير فقط عند بداية الجملة. في أي حالة أخرى، يجب أن تكون جميع الأحرف صغيرة. في كلتا الحالتين، يجب أن تكون proof-of-work مفصولة بشرطات بين كل كلمة.
+
+**الاستخدام الصحيح:**
+
+- Proof-of-work
+- proof-of-work
+- Proof-of-stake
+- proof-of-stake
+
+**الاستخدام غير الصحيح:**
+
+- Proof-of-Stake
+- Proof of stake
+- proof of stake
+
+تنطبق القواعد نفسها التي نطبقها على proof-of-work على proof-of-stake، وproof-of-authority، وproof-of-humanity، وproof-of-individuality، وغيرها.
+
+### Smart contract
+
+يُعد smart contract اسمًا عامًا ويجب أن يُكتب بحرف كبير فقط عند بداية الجملة. في أي حالة أخرى، يجب أن تكون جميع الأحرف صغيرة.
+
+**الاستخدام الصحيح:**
+
+- Smart contract
+- smart contract
+
+**الاستخدام غير الصحيح:**
+
+- Smart Contract
+
+### Zero-knowledge
+
+يُعد Zero-knowledge اسمًا عامًا ويجب أن يُكتب بحرف كبير فقط عند بداية الجملة. في أي حالة أخرى، يجب أن تكون جميع الأحرف صغيرة. في كلتا الحالتين، يجب أن تكون zero-knowledge مفصولة بشرطات بين كل كلمة.
+
+**الاستخدام الصحيح:**
+
+- Zero-knowledge
+- zero-knowledge
+
+**الاستخدام غير الصحيح:**
+
+- Zero-Knowledge
+- Zero knowledge
+- zero knowledge
+
+### ZK-proof
+
+عند استخدام الشكل المختصر لـ zero-knowledge proof، يجب اختصار zero-knowledge إلى ZK، ووصل الاختصار بشرطة.
+
+**الاستخدام الصحيح:**
+
+- ZK-proof
+
+**الاستخدام غير الصحيح:**
+
+- Zk-proof
+- zK-proof
+- zk-proof
+- Zk proof
+- zK proof
+- zk proof
+
+### ZK-rollup
+
+عند استخدام الشكل المختصر لـ zero-knowledge rollup، يجب اختصار zero-knowledge إلى ZK، ووصل الاختصار بشرطة.
+
+**الاستخدام الصحيح:**
+
+- ZK-rollup
+
+**الاستخدام غير الصحيح:**
+
+- Zk-rollup
+- zK-rollup
+- zk-rollup
+- Zk rollup
+- zK rollup
+- zk rollup
+
+### Nominator, validator, collator, node, liteserver
+
+عند استخدام هذه الكلمات، اكتبها بأحرف صغيرة ما لم تكن الكلمة الأولى في عنوان.
+
+**الاستخدام الصحيح:**
+
+- nominator
+- validator
+- collator
+- node
+- liteserver
+
+**الاستخدام غير الصحيح:**
+
+- Nominator
+- Validator
+- Collator
+- Node
+- Liteserver
+
+### BoC, bag of cells
+
+- عند الاختصار، اكتب **BoC** (وليس **BOC** أو **boc**)؛ يمكنك أيضًا استخدام المصطلح الكامل **bag of cells** عند الاقتضاء.
+- تُكتب **Bag of cells** بحرف كبير فقط عندما تبدأ جملة أو عنوانًا. في جميع الحالات الأخرى، اكتب **bag of cells** بأحرف صغيرة.
+
+**الاستخدام الصحيح:**
+
+- BoC
+- Bag of cells
+- bag of cells
+
+
+**الاستخدام غير الصحيح:**
+
+- BOC
+- boc
+- Bag Of Cells
+- Bag of Cells
+
+## انظر أيضًا
+
+- [كيفية المساهمة](/v3/contribute/)
+- [الطباعة](/v3/contribute/typography/)
+
+<Feedback />

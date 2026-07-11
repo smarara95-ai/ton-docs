@@ -1,0 +1,47 @@
+import Feedback from '@site/src/components/Feedback';
+
+# جسر Toncoin
+
+يتيح جسر Toncoin نقل Toncoin بين TON وEthereum Blockchain وبين TON وBSC ‏(BNB Smart Chain).
+
+يُدار هذا الجسر بواسطة [أوراكل لامركزية](/v3/documentation/infra/bridges/toncoin-addresses).
+
+### كيفية استخدامه
+
+واجهة الجسر الأمامية متاحة على [ton.org/bridge](https://ton.org/bridge).
+
+:::info
+[الشيفرة المصدرية للواجهة الأمامية للجسر](https://github.com/ton-blockchain/bridge)
+:::
+
+### الشيفرة المصدرية للعقد الذكي
+
+#### TON-ETH
+
+- [FunC (جانب TON)](https://github.com/ton-blockchain/bridge-func)
+- [Solidity (جانب Ethereum)](https://github.com/ton-blockchain/bridge-solidity/tree/eth_mainnet)
+
+#### TON-BSC (BNB Smart Chain)
+
+- [FunC (جانب TON)](https://github.com/ton-blockchain/bridge-func/tree/bsc)
+- [Solidity (جانب BSC)](https://github.com/ton-blockchain/bridge-solidity/tree/bsc_mainnet)
+
+### إعدادات البلوكشين
+
+يمكنك العثور على عناوين عقود الجسر الذكية وعناوين الأوراكل الحالية عبر التحقق من الإعداد المقابل:
+
+- ETH-TON: [#71](https://github.com/ton-blockchain/ton/blob/35d17249e6b54d67a5781ebf26e4ee98e56c1e50/crypto/block/block.tlb#L738)
+- BSC-TON: [#72](https://github.com/ton-blockchain/ton/blob/35d17249e6b54d67a5781ebf26e4ee98e56c1e50/crypto/block/block.tlb#L739)
+- Polygon-TON: [#73](https://github.com/ton-blockchain/ton/blob/35d17249e6b54d67a5781ebf26e4ee98e56c1e50/crypto/block/block.tlb#L740)
+
+انظر أيضًا إلى [المعلمات 71–73](/v3/documentation/network/config-params/overview#param-71---73).
+
+### الوثائق
+
+- [كيفية عمل الجسر](https://github.com/ton-blockchain/TIPs/issues/24)
+
+### خارطة الطريق العابرة للسلاسل
+
+- [@The Open Network](https://t.me/tonblockchain/146)
+
+<Feedback />

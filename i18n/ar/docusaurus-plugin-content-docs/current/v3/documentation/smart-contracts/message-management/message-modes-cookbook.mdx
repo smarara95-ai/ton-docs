@@ -1,0 +1,471 @@
+import Feedback from '@site/src/components/Feedback';
+
+import ThemedImage from "@theme/ThemedImage";
+
+# دليل أوضاع الرسائل (Message modes cookbook)
+
+يضمن فهم الأوضاع (modes) والأعلام (flags) لإرسال الرسائل أن تتصرف عقودك الذكية كما هو مقصود. يوضح هذا القسم تطبيقها العملي من خلال أمثلة محددة.
+
+:::info IMPORTANT
+يمكنك مراجعة [هذا المثال](https://testnet.tonviewer.com/transaction/42ed45726e4fe994b7fd6dbf953a2ac24ecd77753858abeda9d6755c664a537a) كتحقق واقعي.
+:::
+
+#### قيمة الرسالة ورصيد الحساب
+
+يعكس العقد جميع رموز TON التي يحتفظ بها في `balance` الخاص به. يُخصَّص بعض هذه الرموز أيضًا إلى `message` الوارد قيد المعالجة حاليًا. هذه الآلية فعّالة لأن أي معاملة TON تشمل [عقدًا غير نظامي (non-system contract)](/v3/documentation/smart-contracts/contracts-specs/governance) تعالج رسالة واردة واحدة بالضبط في كل مرة.
+
+> لفهم `balance` داخل TVM بشكل أفضل، راجع كيفية عمل دالة [get_balance](/v3/documentation/smart-contracts/func/docs/stdlib/#get_balance).
+
+لذلك، قد يأتي أي دفع في البلوكتشين إما:
+
+- من `value` الرسالة الواردة.
+  تدفع العقود رسوم الحساب بهذه الطريقة ما لم تستدعِ [accept_message](/v3/documentation/smart-contracts/transaction-fees/accept-message-effects)، التي تمنع الجهات الخبيثة من إنفاق رصيد العقد لمعالجة بياناتها.
+- من `balance` العقد، الذي يترك مبلغ TON الوارد دون مساس أثناء المعاملة.
+  ينطبق هذا الأسلوب حاليًا على رسوم التخزين في سلاسل العمل (workchains) 0 و-1 وعلى الإجراءات الأكثر شيوعًا.
+
+#### الرسوم
+
+ستختلف رسوم المعاملات الفعلية حسب تكوين البلوكتشين، وكود العقد الذكي، وعوامل أخرى. عند استقبال رسالة، ستستهلك رسوم التخزين والغاز جزءًا من `balance` العقد إذا كانت `value` الرسالة [أعلى من مبلغ معين](/v3/documentation/tvm/overview#when-the-compute-phase-is-skipped).
+
+وفقًا لـ[تدفق المعاملة](/v3/documentation/tvm/overview#transactions-and-phases)، تتكون كل معاملة من خمس مراحل متميزة:
+
+- **مرحلة التخزين (Storage phase)**
+   تتعامل مع رسوم التخزين ورسوم استيراد `in_msg`.
+
+- **مرحلة الائتمان (Credit phase)**
+   [تُضاف](https://github.com/ton-blockchain/ton/blob/7151ff26279fef6dcfa1f47fc0c5b63677ae2458/crypto/block/transaction.cpp#L959-L981) قيمة `in_msg` إلى رصيد الحساب.
+
+- **مرحلة الحساب (Compute phase)**
+   تُنفّذ كود العقد الذكي عبر TVM.
+
+- **مرحلة الإجراء (Action phase)**
+   تُعالج مخرجات المعاملة بما في ذلك عمليات `SENDRAWMSG`.
+
+- **مرحلة الارتداد (Bounce phase)**
+   تُدير معالجة ارتداد الرسائل عند الاقتضاء.
+
+#### ملاحظات حول ترتيب التنفيذ:
+
+للرسائل غير القابلة للارتداد (non-bounceable):
+الائتمان ← التخزين ← الحساب ← الإجراء ← الارتداد
+
+للرسائل القابلة للارتداد (bounceable):
+التخزين ← الائتمان ← الحساب ← الإجراء ← الارتداد
+
+> يمكن تخطي مراحل الحساب والإجراء والارتداد
+
+#### تسلسل خصم الرسوم
+
+1. رسوم التخزين
+2. رسوم استيراد الرسائل
+3. رسوم غاز الحساب
+4. رسوم معالجة الإجراءات + رسوم التوجيه (forward)
+
+#### مثال على الحساب
+
+| الرسم في المستكشف (Explorer)                                                                                       | القيمة       | كيف يُحسَب               |
+| :---------------------------------------------------------------------------------------------------- | :---------- | :------------------------------ |
+| إجمالي الرسوم                                                                                             | 0.001982134 | الغاز + التخزين + الإجراء + الاستيراد |
+| رسوم التوجيه (Fwd. fee)                                                                                              | 0.001       | fwd_fee + action_fee + ihr_fee  |
+| رسوم الغاز                                                                                               | 0.0011976   | مرحلة الحساب، الغاز المستخدم         |
+| رسوم التخزين                                                                                           | 0.000000003 | مرحلة التخزين، الحساب فقط     |
+| رسوم الإجراء                                                                                            | 0.000133331 | مرحلة الإجراء، تكلفة كل إجراء   |
+| رسوم الاستيراد (مخفية)                                                                                   | 0.0006512   | تكلفة استيراد in_ext_msg    |
+| [رسوم التوجيه](/v3/documentation/smart-contracts/transaction-fees/fees-low-level#formula-1) (لكل رسالة) | 0.000266669 | تكلفة توجيه in_msg           |
+| [رسوم IHR](/v3/documentation/smart-contracts/transaction-fees/fees-low-level#ihr) (لكل رسالة)           | 0.0006      | تكلفة توجيه ihr لـ in_msg       |
+
+:::info IMPORTANT
+يتم ملء الجدول باستخدام [معاملة المثال هذه](https://tonviewer.com/transaction/b5e14a9c4a4e982fda42d6079c3f84fa48e76497a8f3fca872f9a3737f1f6262).
+
+للحصولات الحسابية المباشرة، راجع [**حاسبة الرسوم**](/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula).
+
+تُدفع `Storage fee` (جزء من `total_fee`) **دائمًا** من **رصيد** العقد.
+:::
+
+رسوم المعاملات المستخدمة في هذه الأمثلة افتراضية ولأغراض توضيحية فقط. أي رسوم بخلاف توجيه الرسائل خارج نطاق هذه المقالة.
+ستظل الأموال المرفقة برسالة متجاهَلة [مُضافة إلى العنوان المستقبِل](https://testnet.tonviewer.com/transaction/8a388731812c80ab9b0ea9531108425488af5def854e4bd6f0ed47362b56d557).
+
+## 1. (الوضع 0، العلم 0) رسالة أساسية \{#mode0}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**، [msg_fwd_fees](/v3/documentation/smart-contracts/transaction-fees/fees-low-level#forward-fees) هي 0.004 TON، ستكون القيمة الفعلية المستلمة 0.096 TON، تُخصم `fwd_fee` و`action_fee` من `value`.
+
+الحالة بعد المعاملة: الحساب A لديه 0.9 TON، الحساب B لديه 1.096 TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 0 basic message"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/send_regular_message_1.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/send_regular_message_1_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 2. (الوضع 0، العلم 2) رسالة صامتة عند الخطأ (error-silent) \{#mode2}
+
+:::info
+يُرجى ملاحظة أن حذف العلم `+2` قد يكون غير آمن. لمزيد من المعلومات، راجع [هذا القسم](/v3/documentation/smart-contracts/message-management/sending-messages#mode3).
+:::
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**. تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 0.096 TON. تُخصم `fwd_fee` و`action_fee` من `value`.
+في حال حدوث خطأ أثناء [مرحلة الإجراء](/v3/documentation/smart-contracts/message-management/sending-messages#message-modes)، سيتم تخطي الرسالة بدلًا من طرح [رمز خروج](/v3/documentation/tvm/exit-codes#standard-exit-codes).
+
+الحالة بعد المعاملة: الحساب A لديه 0.9 TON، الحساب B لديه 1.096 TON
+
+:::info tip
+إذا لم تحدث أخطاء، ستكون النتيجة نفسها كما في [الوضع = 0](#mode0).
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 2 error-silent message"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/send_regular_message_2.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/send_regular_message_2_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 3. (الوضع 0، العلم 16) الارتداد عند خطأ الإجراء \{#mode16}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**. تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 0.096 TON. تُخصم `fwd_fee` و`action_fee` من `value`.
+في حال حدوث خطأ أثناء [مرحلة الإجراء](https://retracer.ton.org/?tx=e9dccba82badc0d742f14eff41c203280f380e87180b5314fcfd742856e598f7&testnet=true)، سترتد الرسالة وتُخصم `total_fee` + `fwd_fee` من `value`.
+
+الحالة بعد المعاملة مع الخطأ: الحساب A لديه 1 - ([total_fee](/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula) + `fwd_fee`) TON، الحساب B لديه 1 TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 16 bounce on action error (error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/send_regular_message_3_error.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/send_regular_message_3_error_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+:::info tip
+إذا لم تحدث أخطاء، ستكون النتيجة نفسها كما في [الوضع = 0](#mode0).
+
+الفرق الرئيسي هو أن `flag 16` يُنشئ ارتدادات لـ[أخطاء مرحلة الإجراء](/v3/documentation/tvm/exit-codes). في المقابل، يتعامل [علم الارتداد المدمج](/v3/documentation/data-formats/layout/messages#commonmsginfo) الخاص بالرسالة مع الأعطال على مستوى البروتوكول مثل:
+
+- عدم وجود العقد الوجهة.
+- طرح العقد الوجهة استثناءً غير معالَج.
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 16 bounce on action error (no error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/send_regular_message_3_noerror.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/send_regular_message_3_noerror_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 4. (الوضع 0، العلم 1) فصل الرسوم \{#mode1}
+
+:::info
+يُرجى ملاحظة أن استخدام هذا العلم وحده غير آمن، لمزيد من المعلومات راجع [هذا القسم](/v3/documentation/smart-contracts/message-management/sending-messages#mode3).
+:::
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**. تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 0.1 TON. تُخصم `fwd_fee` و`action_fee` من `balance`.
+
+الحالة بعد المعاملة: الحساب A لديه 0.896 TON، الحساب B لديه 1.1 TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 1 separate fees"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/send_regular_message_4.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/send_regular_message_4_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 5. (الوضع 0، العلم 17) فصل الرسوم والارتداد عند خطأ الإجراء \{#mode17}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**. تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 0.1 TON. تُخصم `fwd_fee` و`action_fee` من `balance`.
+في حال حدوث خطأ [أثناء مرحلة الإجراء](https://retracer.ton.org/?tx=e9dccba82badc0d742f14eff41c203280f380e87180b5314fcfd742856e598f7&testnet=true)، سترتد الرسالة وتُخصم `total_fee` + `fwd_fee` من `value`.
+
+الحالة بعد المعاملة مع وجود خطأ: الحساب A لديه 1 - ([total_fee](/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula) + `fwd_fee`) TON، الحساب B لديه 1 TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 17 separate fees with bounce (error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/send_regular_message_5_error.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/send_regular_message_5_error_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+:::info tip
+إذا لم تحدث أخطاء، ستكون النتيجة نفسها كما في [الوضع = 0، العلم = 1](#mode1).
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 17 separate fees with bounce (no error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/send_regular_message_5_noerror.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/send_regular_message_5_noerror_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 6. (الوضع 64، العلم 0) ترحيل القيمة المتبقية إلى الأمام \{#mode64}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**؛ بعد ذلك، أرسل **B** مبلغ 0.5 TON إلى **C** بـ`mode` = 64، تبلغ `msg_fwd_fees` 0.004 TON، وستكون `value` الفعلية المستلمة 0.6 TON، تُخصم `total_fee` + `fwd_fee` من `value`.
+
+الحالة بعد المعاملة: الحساب A لديه 0.896 TON، الحساب B لديه 0.5 TON، الحساب C لديه 1.6 - (`total_fee` + `fwd_fee`) TON
+
+:::info
+يمكنك مراجعة [هذا المثال](https://testnet.tonviewer.com/transaction/f63ab35f34e342cdd249f13018d5034ce3d80c488628d5a4db0a43163fa50adb).
+يُرجى ملاحظة أن `storage_fee` مُضمّن في `total_fee` لكنه يُدفع دائمًا من `balance` العقد.
+:::
+
+:::warning
+يُرجى ملاحظة أن `SENDRAWMSG` لا يُحدّث الرصيد.
+
+عند إرسال عدة رسائل، قد تحصل على رمز الخروج 37 (Toncoin غير كافٍ) إذا كانت الأموال غير كافية — على سبيل المثال، لا يُحدّث `SENDRAWMSG` الرصيد ويمكن للوضع 64 أن يُرحّل القيمة المتبقية، تاركًا الإرسال الثاني بدون أموال.
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 64 carry remaining value"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_6.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_6_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 7. (الوضع 64، العلم 1) الترحيل إلى الأمام مع فصل الرسوم \{#mode65}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**؛ بعد ذلك، أرسل **B** مبلغ 0.5 TON إلى **C** بـ`mode` = 65، تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 0.6 TON، تُخصم `total_fee` + `fwd_fee` من `balance`.
+
+الحالة بعد المعاملة: الحساب A لديه 0.896 TON، الحساب B لديه 0.5 - (`total_fee` + `fwd_fee`) TON، الحساب C لديه 1.6 TON
+
+:::info
+يمكنك مراجعة [هذا المثال](https://testnet.tonviewer.com/transaction/ad93e784453b573d737d9d928b4377ff3779177753e05629e54f6629556568ad).
+يُرجى ملاحظة أن `storage_fee` مُضمّن في `total_fee` لكنه يُدفع دائمًا من `balance` العقد.
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 65 carry remaining value with separate fees"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_7.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_7_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 8. (الوضع 64، العلم 16) ترحيل مع حماية الارتداد \{#mode80}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**؛ بعد ذلك، أرسل **B** مبلغ 0.5 TON إلى **C** بـ`mode` = 80، تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 0.6 TON، تُخصم `total_fee` + `fwd_fee` من `value`.
+إذا حدث خطأ أثناء مرحلة الإجراء، سترتد الرسالة، وتُخصم `total_fee` + `fwd_fee` من `value`.
+
+الحالة بعد المعاملة مع وجود خطأ: الحساب A لديه 1 - (`total_fee` + `fwd_fee`) TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 80 carry remaining value (error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_8_error.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_8_error_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+:::info tip
+إذا لم تحدث أخطاء، ستكون النتيجة نفسها كما في [الوضع = 64، العلم 0](#mode64). يُستخدم هذا الوضع على نطاق واسع لتحويلات jetton. يمكنك [مراجعته في قائمة إجراءات C5](https://retracer.ton.org/?tx=6489d60d9197c0be7ee64b0812139d82221e8f94c6e378c356acc10f9067310c) الخاصة بمحفظة jetton.
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt=""
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_8_noerror.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_8_noerror_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 9. (الوضع 64، العلم 17) ترحيل مع حماية الارتداد وفصل الرسوم \{#mode81}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**؛ بعد ذلك، أرسل **B** مبلغ 0.5 TON إلى **C** بـ`mode` = 81، تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 0.6 TON، تُخصم `total_fee` + `fwd_fee` من `balance`.
+إذا حدث خطأ أثناء مرحلة الإجراء، سترتد الرسالة، وتُخصم `total_fee` + `fwd_fee` من `value`.
+
+الحالة بعد المعاملة مع وجود خطأ: الحساب A لديه 1 - (`total_fee` + `fwd_fee`) TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 81 carry remaining value (error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_9_error.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_9_error_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+:::info tip
+إذا لم تحدث أخطاء، ستكون النتيجة نفسها كما في [الوضع = 65](#mode65).
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 81 carry remaining value (no error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_9_noerror.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_9_noerror_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 10. (الوضع 128، العلم 0) إرسال الرصيد بالكامل \{#mode128}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**؛ بعد ذلك، أرسل **B** مبلغ 0.5 TON إلى **C** بـ`mode` = 128، تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 1.1 - `total_fee` TON، تُخصم `total_fee` من `value`.
+
+الحالة بعد المعاملة: الحساب A لديه 0.896 TON، الحساب B لديه 0 TON، الحساب C لديه 2.1 - (`total_fee` + `fwd_fee`) TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 128 send whole balance"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_10.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_10_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 11. (الوضع 128، العلم 16) إرسال الرصيد بالكامل مع حماية الارتداد \{#mode144}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**؛ بعد ذلك، أرسل **B** مبلغ 0.5 TON إلى **C** بـ`mode` = 144، تبلغ `msg_fwd_fees` 0.004 TON، وستكون القيمة الفعلية المستلمة 1.1 - `total_fee` TON، تُخصم `total_fee` من `value`.
+
+الحالة بعد المعاملة مع وجود خطأ: الحساب A لديه 1 - (`total_fee` + `fwd_fee`) TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 144 send whole balance (error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_11_error.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_11_error_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+:::info tip
+إذا لم تحدث أخطاء، ستكون النتيجة نفسها كما في [الوضع = 128](#mode128). يُستخدم هذا الوضع على نطاق واسع لتحويلات jetton. يمكنك [مراجعته في قائمة إجراءات C5](https://retracer.ton.org/?tx=e4f31e37eec74a8cfcecdad9246a6bbf3da20c4edb3635150cb0fa54b9def558) الخاصة بمحفظة jetton.
+:::
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 144 send whole balance (no error)"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_11_noerror.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_11_noerror_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+## 12. (الوضع 128، العلم 32) إرسال الرصيد بالكامل وتدمير العقد \{#mode160}
+
+الحالة قبل المعاملة: الحساب A لديه 1 TON، الحساب B لديه 1 TON، الحساب C لديه 1 TON
+
+أرسل **A** مبلغ 0.1 TON إلى **B**؛ بعد ذلك، أرسل **B** مبلغ 0.5 TON إلى **C** بـ`mode` = 160. تبلغ `msg_fwd_fees` 0.004 TON. ستكون القيمة الفعلية المستلمة 1.1 - `total_fee` TON، مع خصم `total_fee` من `value`.
+
+الحالة بعد المعاملة: الحساب A لديه 0.896 TON، الحساب B لديه 0 TON و`nonexist`، الحساب C لديه 2.1 - (`total_fee` + `fwd_fee`) TON
+
+عندما يصل الرصيد إلى 0 TON، يتم تدمير العقد.
+
+<br></br>
+<div class="text--center">
+  <ThemedImage
+    alt="Diagram: mode 160 send whole balance and destroy"
+    sources={{
+      light:
+        "/img/docs/message-modes-cookbook/carry_remaining_value_12.png?raw=true",
+      dark: "/img/docs/message-modes-cookbook/carry_remaining_value_12_dark.png?raw=true",
+    }}
+  />
+</div>
+<br></br>
+
+[cb]: https://github.com/ton-blockchain/ton/blob/7151ff26279fef6dcfa1f47fc0c5b63677ae2458/crypto/block/block.tlb#L263C1-L265C20
+[msg]: /v3/documentation/data-formats/layout/messages#commonmsginfo
+[storage_fee]: /v3/documentation/smart-contracts/transaction-fees/fees-low-level#storage-fee
+[account_storage]: https://github.com/ton-blockchain/ton/blob/7151ff26279fef6dcfa1f47fc0c5b63677ae2458/crypto/block/transaction.cpp#L651-L675
+[in_msg_import]: https://github.com/ton-blockchain/ton/blob/7151ff26279fef6dcfa1f47fc0c5b63677ae2458/crypto/block/transaction.cpp#L783-L816
+
+<Feedback />

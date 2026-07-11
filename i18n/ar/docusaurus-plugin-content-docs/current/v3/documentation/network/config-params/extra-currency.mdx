@@ -1,0 +1,75 @@
+import Feedback from '@site/src/components/Feedback';
+
+# سك العملات الإضافية (Extra currency minting)
+
+## العملة الإضافية (Extracurrency)
+
+وفقًا لـ [ورقة TON Blockchain البيضاء 3.1.6](https://ton-blockchain.github.io/docs/tblkch.pdf#page=55)، تسمح TON Blockchain للمستخدمين بإنشاء عملات رقمية أو رموز عشوائية، بالإضافة إلى Toncoin، شريطة استيفاء شروط معينة. يتم تحديد هذه العملات الرقمية الإضافية بواسطة **currency_ids** مكوّنة من 32 بت. قائمة هذه العملات الرقمية المعرّفة هي جزء من تكوين البلوكشين المخزّن في MasterChain. تتضمن كل رسالة داخلية ورصيد حساب حقلًا خاصًا لـ `ExtraCurrencyCollection`، وهو مجموعة من العملات الإضافية المرفقة برسالة أو المحتفظ بها في رصيد:
+
+```tlb
+extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32)) = ExtraCurrencyCollection;
+currencies$_ grams:Grams other:ExtraCurrencyCollection = CurrencyCollection;
+```
+
+## إعدادات العملة الإضافية (Extracurrency config)
+
+يتم تخزين قاموس، وتحديدًا `ExtraCurrencyCollection`، يحتوي على جميع العملات المراد سكّها، في `ConfigParam7`:
+
+```tlb
+_ to_mint:ExtraCurrencyCollection = ConfigParam 7;
+```
+
+يحتوي `ConfigParam 6` على البيانات المتعلقة بالسك:
+
+```tlb
+_ mint_new_price:Grams mint_add_price:Grams = ConfigParam 6;
+```
+
+يحتوي `ConfigParam2` على عنوان **الجهة الساكّة (minter)**.
+
+## مسار السك منخفض المستوى (Low-level minting flow)
+
+في كل كتلة (block)، يقارن المُجمِّع (collator) الرصيد العالمي القديم (الرصيد العالمي لجميع العملات في نهاية الكتلة السابقة) مع `ConfigParam7`. إذا كان أي مبلغ لأي عملة في `ConfigParam7` أقل مما هو عليه في الرصيد العالمي، يكون التكوين غير صالح. إذا كان أي مبلغ لأي عملة في `ConfigParam7` أعلى مما هو عليه في الرصيد العالمي، سيتم إنشاء رسالة سك.
+
+تحتوي رسالة السك هذه على مصدر `-1:0000000000000000000000000000000000000000000000000000000000000000` و**الجهة الساكّة (minter)** من `ConfigParam2` كوجهة، وتحتوي على الفائض من العملات الإضافية في `ConfigParam7` مقارنة بالرصيد العالمي القديم.
+
+المشكلة هنا هي أن رسالة السك تتضمن فقط العملات الإضافية ولا تتضمن أي Toncoins. نتيجة لذلك، حتى لو تم تعيين **الجهة الساكّة (Minter)** كعقد ذكي أساسي (كما هو موضح في `ConfigParam31`)، ستؤدي رسالة السك إلى معاملة مُجهضة (aborted) مع الخطأ: `compute_ph:(tr_phase_compute_skipped reason:cskip_no_gas)`.
+
+## مسار السك عالي المستوى (High-level minting flow)
+
+أحد مسارات السك عالية المستوى الممكنة، والمُنفَّذة [هنا](https://github.com/ton-blockchain/governance-contract/tree/50ed2ecacc9e3cff4c77cbcc69aa07b39f5c46a2) (راجع ملفات `*.tolk`) هو كما يلي:
+
+1. يوجد `ExtraCurrencyAuthorizationConfig`: يحتوي هذا التكوين على معلومات حول العقود (العناوين) التي تملك التفويض لطلب من الجهة الساكّة سك عملات إضافية جديدة. يتبع هذا التكوين المخطط التالي:
+
+```tlb
+_ (Hashmap 32 std_addr) = ExtraCurrencyAuthorizationConfig;
+```
+
+حيث المفتاح هو `currency_id` و`std_addr` هو _المسؤول (admin)_ لهذه العملة (يمكن أن يكون في أي WorkChain).
+
+2. تقبل الجهة الساكّة (Minter) طلبات السك من **المسؤولين (admins)**، وتُرسل طلبات السك إلى **الإعدادات (config)**، وتقوم **الإعدادات (config)** بتحديث `ConfigParam 7`، وترسل الرد إلى **الجهة الساكّة (minter)**. نظرًا لأن العملات الإضافية لن يتم سكّها في **الجهة الساكّة (minter)** إلا في كتلة MasterChain التالية، يجب تأخير سحب العملات الإضافية إلى **المسؤول (admin)**. يتم ذلك عبر عقد ذكي **echo**، وليس في MasterChain. عندما يصل الرد من **echo** إلى **الجهة الساكّة (minter)**، فإنها ترسل العملات الإضافية إلى **المسؤول (admin)**. لذا فإن المخطط هو كما يلي:
+
+	`Admin -> Minter -> Config -> Minter -> Echo (في ورك تشين آخر للانتظار حتى الكتلة التالية من MasterChain) -> Minter -> Admin`
+
+مثال على هذا المسار هو كالتالي: [سك 2,000,000,000 وحدة من `currency_id=100`](https://testnet.tonviewer.com/transaction/20fe328c04b4896acecb6e96aaebfe6fef90dcc1441e27049302f29770904ef0)
+
+:::danger
+كل عملية سك لعملة إضافية جديدة أو زيادة في المعروض من عملة موجودة تستلزم تغييرًا في `ConfigParam7`، مما يؤدي بدوره إلى تغيير تكوين وإنشاء الكتل المفتاحية (keyblocks). يمكن أن يؤدي إنشاء الكتل المفتاحية المتكرر إلى إبطاء أداء الشارد (shard) لأن كل كتلة مفتاحية تتسبب في تدوير مجموعات المدققين (validator groups) وتؤثر على مزامنة عملاء lite (liteclients). لذلك، لا ينبغي استخدام عقود مثل `swap.tolk` في بيئات الإنتاج. بدلًا من ذلك، يُنصح باستخدام مخططات تتضمن احتياطيات لتقليل أحداث السك.
+:::
+
+:::info
+لإرسال العملة الإضافية إلى الثقب الأسود (blackhole) التأثير التالي: يتم حرق (burnt) مبلغ العملة الإضافية، ولكن نظرًا لأن `ConfigParam7` لم يتغير، ستحصل **الجهة الساكّة (minter)** في الكتلة التالية على المبلغ المحروق في رصيدها.
+:::
+
+
+## كيفية سك عملتك الإضافية الخاصة
+
+1. تأكد من أن شبكتك تحتوي على **عقد الجهة الساكّة (minter contract)** وأن `ConfigParam2` و`ConfigParam6` مضبوطان بشكل صحيح.
+
+2. أنشئ **عقد مسؤول العملة (currency admin contract)** الذي سيتحكم في كيفية سك العملة الإضافية.
+
+3. قدّم اقتراحًا إلى المدققين (validators) لإضافة عنوان عقد **مسؤول العملة (currency admin)** الخاص بك إلى `ExtraCurrencyAuthorizationConfig` لـ `currency_id` معين، واحصل على موافقتهم.
+
+4. أرسل طلب `mint` من **عقد مسؤول العملة (currency admin contract)** إلى **الجهة الساكّة (minter)**. انتظر حتى تُعيد **الجهة الساكّة (minter)** العملة الإضافية.
+<Feedback />
+
