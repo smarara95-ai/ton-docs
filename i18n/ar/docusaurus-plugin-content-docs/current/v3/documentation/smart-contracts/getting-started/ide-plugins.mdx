@@ -1,0 +1,46 @@
+import Feedback from '@site/src/components/Feedback';
+
+# إضافات بيئة التطوير (IDE plugins)
+
+اختر بيئة التطوير (IDE) أو المحرر الخاص بك، وقم بتثبيت الإضافة المناسبة للغتك.
+
+توجد إضافات مدعومة رسميًا لكل من [Tolk](/v3/documentation/smart-contracts/tolk/overview)، و[FunC](/v3/documentation/smart-contracts/func/overview)، و[Fift](/v3/documentation/smart-contracts/fift/overview)، و[TL-B](/v3/documentation/data-formats/tlb/overview)، و[Blueprint](/v3/documentation/smart-contracts/getting-started/javascript).
+
+## بيئات تطوير JetBrains
+
+إضافة لمنتجات JetBrains (IntelliJ IDEA وWebStorm وPyCharm وCLion وغيرها).
+
+![TON JetBrains plugin screenshot](/img/docs/ton-jetbrains-plugin.png)
+
+هناك عدة طرق لتثبيت الإضافة:
+- باستخدام نظام الإضافات المدمج في بيئة التطوير:
+<kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "TON"</kbd> >
+  <kbd>Install Plugin</kbd>
+
+- عبر [Marketplace](https://plugins.jetbrains.com/plugin/23382-ton)
+- قم بتنزيل [أحدث إصدار](https://github.com/ton-blockchain/intellij-ton/releases/latest) وتثبيته يدويًا باستخدام
+<kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
+
+## Visual Studio Code
+
+إضافة لـ Visual Studio Code (VS Code) والمحررات المبنية على VS Code (VS Codium وCursor وWindsurf وغيرها).
+
+### Marketplace
+
+قم بتثبيت إضافة TON في [VS Code](https://marketplace.visualstudio.com/items?itemName=ton-core.vscode-ton) أو [المحررات المبنية على VS Code](https://open-vsx.org/extension/ton-core/vscode-ton).
+
+### يدويًا
+احصل على أحدث ملف `.vsix` من [الإصدارات](https://github.com/ton-blockchain/ton-language-server/releases)، أو من
+[متجر VS Code](https://marketplace.visualstudio.com/items?itemName=ton-core.vscode-ton)،
+أو من [Open VSX Registry](https://open-vsx.org/extension/ton-core/vscode-ton).
+
+في VS Code:
+<kbd>Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`)</kbd> >
+<kbd>Type "Install from VSIX"</kbd> >
+<kbd>Select the downloaded `.vsix` file</kbd> >
+<kbd>Reload VS Code</kbd>
+
+## Web IDE
+باستخدام [TON Web IDE](https://ide.ton.org/)، يمكنك تجربة تطوير العقود الذكية عبر الإنترنت دون تثبيت أي شيء محليًا.
+
+<Feedback />

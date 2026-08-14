@@ -1,0 +1,214 @@
+---
+title: لغة Tact
+---
+
+import Feedback from "@site/src/components/Feedback";
+import Button from "@site/src/components/button";
+
+# لغة Tact
+
+Tact هي لغة برمجة لـ TON Blockchain تركّز على الكفاءة وسهولة التطوير. وهي مناسبة للعقود الذكية المعقدة، والانطلاق السريع، والنمذجة الأولية السريعة.
+
+طُوّرت بواسطة [TON Studio](https://tonstudio.io)، وبدعم من المجتمع — وبحلول نهاية عام 2024، وصل عدد العقود ذات _الشفرة الفريدة_[^1] المنشورة على Mainnet إلى ما يقارب 28,000 عقد، كان نحو 33% منها مكتوبًا بلغة Tact. يمكنك الاطلاع على بعض المشاريع المختارة هنا: [Tact in production](#tact-in-production).
+
+[^1]: تعني "الشفرة الفريدة" أن كل عقد في عينة البيانات يحتوي على تعليمة TVM واحدة على الأقل تختلف عن العقود الأخرى، مع استبعاد كثير من المحافظ المُعالجة مسبقًا التي أُدرج فيها كل شيء inline — حتى seqno والمفتاح العام للتحقق من التوقيع!
+
+خضعت Tact لتدقيق أمني شامل من قبل [Trail of Bits](https://www.trailofbits.com)، وهي شركة رائدة في أمن Web3.
+
+<Button href="https://ide.ton.org/"
+        colorType="primary" sizeType="sm">
+
+جرّبه عبر الإنترنت!
+
+</Button>
+
+<Button href="https://docs.tact-lang.org/"
+        colorType="secondary" sizeType="sm">
+
+وثائق Tact
+
+</Button>
+
+<Button href="https://github.com/tact-lang/awesome-tact"
+        colorType="secondary" sizeType="sm">
+
+Awesome Tact
+
+</Button>
+
+## الميزات
+
+من أبرز ميزات Tact وأكثرها تميزًا:
+
+- صياغة مألوفة وسهلة الاستخدام شبيهة بـ TypeScript.
+- نظام أنواع ساكن قوي مع [Structs] و[Messages] و[maps] مدمجة، من بين أمور أخرى.
+- دعم من الدرجة الأولى لـ [maps] مع العديد من الأساليب وعبارة [`foreach` statement][foreach] مريحة للتنقّل.
+- (إلغاء) التسلسل التلقائي للرسائل الواردة وبُنى البيانات.
+- التوجيه التلقائي لـ [internal, external, and bounced messages][recvfun].
+- التعامل التلقائي مع أنواع الرسائل، بما في ذلك [binary, text, and fallback slices][recv].
+- لا حاجة إلى شيفرة نمطية [لإرسال الرسائل] ونشر العقود الفرعية.
+- سلوكيات قابلة لإعادة الاستخدام عبر [traits].
+- دعم للبرمجة منخفضة المستوى عبر دوال [`asm` functions][asmfun].
+- توليد [single-file TypeScript wrappers] لتسهيل التفاعل مع العقود المُجمَّعة، وتشمل:
+  - تعريفات الأنواع لـ [Structs] و[Messages] كما هو موضح في [compilation report].
+  - دوال `storeStructureName()` و`loadStructureName()` المقابلة لإجراء (إلغاء) التسلسل.
+  - جميع الثوابت العامة وثوابت مستوى العقد.
+  - سجلات ثنائية الاتجاه لرموز الخروج: من أسمائها إلى أرقامها والعكس.
+  - رموز العمليات لجميع [Messages].
+  - فئة wrapper للعقد مع وظائف مساعدة متنوعة للتهيئة والنشر وتبادل الرسائل.
+- [standard library][stdlib] غنية.
+- [documentation] واسعة.
+- [tooling](#tooling) قوية.
+- ...وما يزال هناك الكثير قادمًا!
+
+[Structs]: https://docs.tact-lang.org/book/structs-and-messages#structs
+[Messages]: https://docs.tact-lang.org/book/structs-and-messages#messages
+[maps]: https://docs.tact-lang.org/book/maps
+[foreach]: https://docs.tact-lang.org/book/statements#foreach-loop
+[recv]: https://docs.tact-lang.org/book/receive/
+[recvfun]: https://docs.tact-lang.org/book/contracts/#receiver-functions
+[sending messages]: https://docs.tact-lang.org/book/send/#message-sending-functions
+[traits]: https://docs.tact-lang.org/book/types/#traits
+[asmfun]: https://docs.tact-lang.org/book/assembly-functions/
+[single-file TypeScript wrappers]: https://docs.tact-lang.org/book/compile/#wrap
+[compilation report]: https://docs.tact-lang.org/book/compile/#report
+[stdlib]: https://docs.tact-lang.org/ref/
+[documentation]: https://docs.tact-lang.org/
+
+## الأمان
+
+- [التدقيق الأمني لـ Tact بواسطة Trail of Bits (2025، PDF)](https://github.com/trailofbits/publications/blob/master/reviews/2025-01-ton-studio-tact-compiler-securityreview.pdf)
+  - رابط احتياطي: [تقرير PDF](https://github.com/tact-lang/website/blob/416073ed4056034639de257cb1e2815227f497cb/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
+
+## Tact في بيئة الإنتاج
+
+بعض البرمجيات والتطبيقات المختارة المبنية على عقود مكتوبة بلغة Tact، والمنشورة في بيئات الإنتاج، ويستخدمها المستخدمون النهائيون:
+
+#### مفتوحة المصدر أو ذات شيفرة متاحة
+
+- [Proof of Capital](https://github.com/proof-of-capital/TON) - [Proof of Capital](https://proofofcapital.org/) هو عقد ذكي لصناعة السوق يحمي مصالح جميع الحاملين.
+  - اطّلع على [تقرير التدقيق الأمني](https://raw.githubusercontent.com/nowarp/public-reports/master/2025-01-proof-of-capital.pdf) من [Nowarp](https://nowarp.io).
+
+#### مغلقة المصدر
+
+- [Tradoor](https://tradoor.io) - منصة DEX سريعة واجتماعية على TON.
+  - اطّلع على [تقرير التدقيق الأمني](https://www.tonbit.xyz/reports/Tradoor-Smart-Contract-Audit-Report-Summary.pdf) من TonBit.
+- [PixelSwap](https://www.pixelswap.io) - أول منصة DEX معيارية وقابلة للترقية على TON.
+  - اطّلع على [تقرير التدقيق الأمني](https://github.com/trailofbits/publications/blob/master/reviews/2024-12-pixelswap-dex-securityreview.pdf) من Trail of Bits.
+- [GasPump](https://gaspump.tg) - منصة إطلاق وتداول memecoin على TON.
+
+راجع [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-production-) في قائمة Awesome Tact.
+
+## التثبيت
+
+### المصرّف
+
+يتم توزيع مصرّف Tact على هيئة [حزمة npm](https://www.npmjs.com/package/@tact-lang/compiler) مرفقة مع [Tact standard library](https://docs.tact-lang.org/ref/).
+
+إصدار Node.js الموصى به هو 22 أو أعلى، بينما الحد الأدنى للإصدار هو 18.
+
+استخدم مدير الحزم المفضل لديك لتثبيته داخل مشروع Node.js:
+
+```bash
+# Example with yarn (others work too)
+yarn add @tact-lang/compiler
+
+# you can also use npm
+npm i @tact-lang/compiler@latest
+
+# or pnpm
+pnpm add @tact-lang/compiler
+
+# or bun
+bun add @tact-lang/compiler
+```
+
+وبدلاً من ذلك، يمكنك تثبيته بشكل عام كما يلي:
+
+```bash
+npm i -g @tact-lang/compiler
+```
+
+سيجعل ذلك مصرّف `tact` متاحًا في `PATH` لديك، بالإضافة إلى:
+
+- أداة `unboc` مريحة لفك تجميع شيفرة العقد المصرّفة إلى صيغة [Bag of Cells (BoC)](/v3/documentation/data-formats/cells/overview/#bag-of-cells) (`.boc`)،
+- ومنسّق `tact-fmt`، الذي يمكنه تنسيق ملفات Tact الفردية والمجلدات أو التحقق من تنسيقها.
+
+### الأدوات
+
+#### JetBrains IDEs
+
+توجد عدة طرق لتثبيت الإضافة:
+- ابحث عن الإضافة مباشرةً في قسم الإضافات داخل IDE باستخدام الكلمات المفتاحية "**Tact**"
+- [Marketplace](https://plugins.jetbrains.com/plugin/27290-tact)
+- [GitHub repository](https://github.com/tact-lang/intelli-tact)
+
+#### Visual Studio Code
+
+Visual Studio Code هو IDE مجاني وشائع بين المطورين.
+
+- [Marketplace](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact)
+- [Open VSX registry](https://open-vsx.org/extension/tonstudio/vscode-tact)
+- [GitHub repository](https://github.com/tact-lang/tact-language-server)
+
+#### Sublime Text
+
+- [Package Control](https://packagecontrol.io/packages/Tact)
+- [GitHub repository](https://github.com/tact-lang/tact-sublime)
+
+#### Vim
+
+إضافة Vim متكاملة للغة Tact تعمل مع Vim 8 فأحدث.
+
+- [GitHub repository](https://github.com/tact-lang/tact.vim)
+
+#### Neovim
+
+لتفعيل تمييز الصياغة في Neovim، اتبع تعليمات التثبيت في [دليل البدء السريع nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#quickstart).
+
+وللتأكد من التعرّف على الامتداد `.tact` بشكل صحيح، ثبّت إضافة [tact.vim](https://github.com/tact-lang/tact.vim).
+
+#### Helix
+
+لتفعيل دعم لغة Tact، ارجع إلى التعليمات التالية:
+
+1. للحصول على أحدث تمييز للصياغة، أعد إعداد [tree-sitter-tact](https://github.com/tact-lang/tree-sitter-tact#helix)
+2. وللحصول على ذكاء المحرر، أعد إعداد [tact-language-server](https://github.com/tact-lang/tact-language-server#other-editors)
+
+#### الأمان
+
+- [Misti](https://github.com/nowarp/misti) - محلل ساكن للعقود الذكية.
+- [TON Symbolic Analyzer (TSA)](https://github.com/espritoxyz/tsa) - أداة تحليل ساكن للعقود الذكية تعتمد على التنفيذ الرمزي.
+
+#### أدوات مساعدة
+
+- المنسّق (`tact-fmt`) — المنسّق الرسمي. يأتي مرفقًا مع Tact Language Server وامتداد VS Code وكثنائي مستقل مع المصرّف. يمكنك تشغيله عبر `npx tact-fmt` داخل مشاريع Tact.
+- مفكك BoC (`unboc`) — أداة تفكيك لملفات [`.boc`](/v3/documentation/data-formats/cells/overview#bag-of-cells). يأتي كثنائي مستقل مع المصرّف. يمكنك تشغيله عبر `npx unboc` داخل مشاريع Tact.
+
+### البدء
+
+لبداية سريعة، اقرأ الدليل المصغّر ["Let's start!"](https://docs.tact-lang.org/#start) في وثائق Tact. يستخدم هذا الدليل بيئة تطوير [Blueprint](https://github.com/ton-community/blueprint) لكتابة العقود الذكية على TON Blockchain واختبارها ونشرها.
+
+إذا أردت تحكمًا يدويًا أكبر، فاستخدم [tact-template](https://github.com/tact-lang/tact-template). فهو قالب جاهز للاستخدام مع بيئة تطوير معدّة مسبقًا، بما في ذلك مصرّف Tact مع TypeScript + Jest ومحاكي TON محلي ودعم محرر قائم على الذكاء الاصطناعي وأمثلة على كيفية تشغيل الاختبارات.
+
+```shell
+git clone --depth 1 https://github.com/tact-lang/tact-template
+```
+
+## المجتمع
+
+إذا لم تتمكن من العثور على الإجابة في [الوثائق](https://docs.tact-lang.org)، أو جرّبت إجراء بعض الاختبارات المحلية وما زال ذلك غير كافٍ — فلا تتردد في التواصل مع مجتمع Tact المزدهر:
+
+- [`@tactlang` on Telegram](https://t.me/tactlang) - دردشة المجتمع الرئيسية ومجموعة النقاش.
+- [`@tactlang_ru` on Telegram](https://t.me/tactlang_ru) _(بالروسية)_
+- [`@tact_kitchen` on Telegram](https://t.me/tact_kitchen) - قناة تتضمن تحديثات من الفريق.
+- [`@tact_language` on X/Twitter](https://x.com/tact_language)
+- [`tact-lang` organization on GitHub](https://github.com/tact-lang)
+- [`@ton_studio` on Telegram](https://t.me/ton_studio)
+- [`@thetonstudio` on X/Twitter](https://x.com/thetonstudio)
+
+## المساهمة
+
+المساهمات مرحب بها! للمساعدة في تطوير المصرّف، راجع [دليل المساهمة](https://github.com/tact-lang/tact/blob/main/dev-docs/CONTRIBUTING.md).
+
+<Feedback />

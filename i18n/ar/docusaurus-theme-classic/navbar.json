@@ -1,0 +1,198 @@
+{
+  "item.label.Concepts": {
+    "message": "المفاهيم",
+    "description": "Navbar item with label Concepts"
+  },
+  "item.label.Introduction to TON": {
+    "message": "مقدمة إلى TON",
+    "description": "Navbar item with label Introduction to TON"
+  },
+  "item.label.Blockchain of Blockchains": {
+    "message": "بلوكتشين البلوكتشينات",
+    "description": "Navbar item with label Blockchain of Blockchains"
+  },
+  "item.label.Smart Contract Addresses": {
+    "message": "عناوين العقود الذكية",
+    "description": "Navbar item with label Smart Contract Addresses"
+  },
+  "item.label.Cells as a Data Structure": {
+    "message": "الخلايا كبنية بيانات",
+    "description": "Navbar item with label Cells as a Data Structure"
+  },
+  "item.label.TON Networking": {
+    "message": "شبكة TON",
+    "description": "Navbar item with label TON Networking"
+  },
+  "item.label.Whitepapers": {
+    "message": "الأوراق البيضاء",
+    "description": "Navbar item with label Whitepapers"
+  },
+  "item.label.Get Started": {
+    "message": "ابدأ الآن",
+    "description": "Navbar item with label Get Started"
+  },
+  "item.label.Start with Onboarding Tutorials": {
+    "message": "ابدأ بدروس التهيئة",
+    "description": "Navbar item with label Start with Onboarding Tutorials"
+  },
+  "item.label.Build your first Mini App": {
+    "message": "أنشئ تطبيقك المصغّر الأول",
+    "description": "Navbar item with label Build your first Mini App"
+  },
+  "item.label.Dive into DApps Development": {
+    "message": "تعمّق في تطوير التطبيقات اللامركزية",
+    "description": "Navbar item with label Dive into DApps Development"
+  },
+  "item.label.Mint your first Token (Jetton)": {
+    "message": "اسكّ رمزك الأول (Jetton)",
+    "description": "Navbar item with label Mint your first Token (Jetton)"
+  },
+  "item.label.TMA Development": {
+    "message": "تطوير تطبيقات Telegram المصغّرة",
+    "description": "Navbar item with label TMA Development"
+  },
+  "item.label.Transaction Processing": {
+    "message": "معالجة المعاملات",
+    "description": "Navbar item with label Transaction Processing"
+  },
+  "item.label.TON Cookbook": {
+    "message": "دليل TON العملي",
+    "description": "Navbar item with label TON Cookbook"
+  },
+  "item.label.DApps": {
+    "message": "التطبيقات اللامركزية",
+    "description": "Navbar item with label DApps"
+  },
+  "item.label.Smart Contracts": {
+    "message": "العقود الذكية",
+    "description": "Navbar item with label Smart Contracts"
+  },
+  "item.label.Understanding Wallets": {
+    "message": "فهم المحافظ",
+    "description": "Navbar item with label Understanding Wallets"
+  },
+  "item.label.Write Smart Contracts": {
+    "message": "كتابة العقود الذكية",
+    "description": "Navbar item with label Write Smart Contracts"
+  },
+  "item.label.Sending Messages": {
+    "message": "إرسال الرسائل",
+    "description": "Navbar item with label Sending Messages"
+  },
+  "item.label.Transaction Fees": {
+    "message": "رسوم المعاملات",
+    "description": "Navbar item with label Transaction Fees"
+  },
+  "item.label.Best Practices for Contracts": {
+    "message": "أفضل الممارسات للعقود",
+    "description": "Navbar item with label Best Practices for Contracts"
+  },
+  "item.label.FunC Development Language": {
+    "message": "لغة تطوير FunC",
+    "description": "Navbar item with label FunC Development Language"
+  },
+  "item.label.FunC Cookbook": {
+    "message": "دليل FunC العملي",
+    "description": "Navbar item with label FunC Cookbook"
+  },
+  "item.label.Data formats": {
+    "message": "تنسيقات البيانات",
+    "description": "Navbar item with label Data formats"
+  },
+  "item.label.TON Virtual Machine (TVM)": {
+    "message": "الآلة الافتراضية TON (TVM)",
+    "description": "Navbar item with label TON Virtual Machine (TVM)"
+  },
+  "item.label.Nodes": {
+    "message": "العُقَد",
+    "description": "Navbar item with label Nodes"
+  },
+  "item.label.Node Types": {
+    "message": "أنواع العُقَد",
+    "description": "Navbar item with label Node Types"
+  },
+  "item.label.Become a Validator": {
+    "message": "كن مُحقِّقاً",
+    "description": "Navbar item with label Become a Validator"
+  },
+  "item.label.Run a Full Node": {
+    "message": "تشغيل عقدة كاملة",
+    "description": "Navbar item with label Run a Full Node"
+  },
+  "item.label.Enable Liteserver": {
+    "message": "تفعيل Liteserver",
+    "description": "Navbar item with label Enable Liteserver"
+  },
+  "item.label.Run an Archive Node": {
+    "message": "تشغيل عقدة أرشيف",
+    "description": "Navbar item with label Run an Archive Node"
+  },
+  "item.label.Single Nominator Pool": {
+    "message": "مجمع المُرشَّح الواحد",
+    "description": "Navbar item with label Single Nominator Pool"
+  },
+  "item.label.Vesting Contract": {
+    "message": "عقد الاستحقاق",
+    "description": "Navbar item with label Vesting Contract"
+  },
+  "item.label.Web3": {
+    "message": "Web3",
+    "description": "Navbar item with label Web3"
+  },
+  "item.label.TON DNS & Domains": {
+    "message": "نظام أسماء نطاقات TON والمجالات",
+    "description": "Navbar item with label TON DNS & Domains"
+  },
+  "item.label.Open TON Sites": {
+    "message": "فتح مواقع TON",
+    "description": "Navbar item with label Open TON Sites"
+  },
+  "item.label.Run TON Sites": {
+    "message": "تشغيل مواقع TON",
+    "description": "Navbar item with label Run TON Sites"
+  },
+  "item.label.Run a Storage Daemon": {
+    "message": "تشغيل خادم التخزين",
+    "description": "Navbar item with label Run a Storage Daemon"
+  },
+  "item.label.Build a Storage Provider": {
+    "message": "بناء موفّر تخزين",
+    "description": "Navbar item with label Build a Storage Provider"
+  },
+  "item.label.Community": {
+    "message": "المجتمع",
+    "description": "Navbar item with label Community"
+  },
+  "item.label.TON Answers": {
+    "message": "إجابات TON",
+    "description": "Navbar item with label TON Answers"
+  },
+  "item.label.TON Developers Kit": {
+    "message": "حزمة أدوات مطوّري TON",
+    "description": "Navbar item with label TON Developers Kit"
+  },
+  "item.label.AI TON Support Agent": {
+    "message": "وكيل دعم TON بالذكاء الاصطناعي",
+    "description": "Navbar item with label AI TON Support Agent"
+  },
+  "item.label.Standards Discussion (TEPs)": {
+    "message": "نقاش المعايير (TEPs)",
+    "description": "Navbar item with label Standards Discussion (TEPs)"
+  },
+  "item.label.Contribute to Docs": {
+    "message": "المساهمة في التوثيق",
+    "description": "Navbar item with label Contribute to Docs"
+  },
+  "logo.alt": {
+    "message": "TON",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.APIs": {
+    "message": "واجهات برمجة التطبيقات",
+    "description": "Navbar item with label APIs"
+  },
+  "item.label.SDKs": {
+    "message": "حزم تطوير البرمجيات",
+    "description": "Navbar item with label SDKs"
+  }
+}

@@ -1,0 +1,65 @@
+import Feedback from '@site/src/components/Feedback';
+
+# عناوين العقود الذكية
+
+يحدث كل تفاعل على TON Blockchain بين عقود ذكية، ويُعرَّف كل منها بعنوان فريد. يشرح هذا القسم كيفية تكوين هذه العناوين ولماذا تعد أساسية في بنية TON.
+
+## كل شيء هو عقد ذكي
+
+تطبق TON [نموذج الممثلين](/v3/guidelines/dapps/transactions/foundations-of-blockchain#actor)، حيث تكون جميع الكيانات، بما في ذلك المحافظ، عقودًا ذكية. وكل ممثل:
+
+- يعالج الرسائل الواردة
+- يحدّث حالته الداخلية
+- يُنشئ الرسائل الصادرة
+
+ونتيجة لذلك، يجب أن يمتلك كل ممثل عنوانًا فريدًا لضمان التوجيه الصحيح للرسائل.
+
+:::info للمطورين القادمين من Ethereum
+على عكس EVM، حيث تكون العناوين والعقود منفصلة، توحّد TON بينهما: فكل عنوان يشير إلى عقد. تعرّف أكثر في المقالة: ["ستة جوانب فريدة في TON Blockchain ستفاجئ مطوري Solidity"](https://blog.ton.org/six-unique-aspects-of-ton-blockchain-that-will-surprise-solidity-developers) - _Tal Kol_.
+:::
+
+## عنوان العقد الذكي
+
+تتكون عناوين العقود الذكية على TON من مكوّنين رئيسيين:
+
+- **workchain_id**: معرّف WorkChain (عدد صحيح موقّع من 32 بت).
+- **account_id**: عنوان الحساب (من 64 إلى 512 بت، حسب WorkChain).
+
+### معرّف WorkChain
+
+تدعم TON Blockchain ما يصل إلى `2^32` WorkChains فريدة، لكل منها قواعدها الخاصة. وتضمن البادئة `workchain_id` ذات 32 بت في عناوين العقود الذكية قابلية التشغيل البيني، مما يسمح للعقود بإرسال الرسائل واستقبالها عبر WorkChains مختلفة.
+
+حاليًا، هناك WorkChains نشطتان:
+- **MasterChain** (`workchain_id = -1`): السلسلة المركزية المنسّقة.
+- **BaseChain** (`workchain_id = 0`): WorkChain الافتراضية لمعظم العمليات.
+
+ويستخدم كلاهما **عناوين من 256 بت** للحسابات.
+
+### معرّف الحساب
+
+تستخدم جميع معرّفات الحسابات على TON عناوين من 256 بت على كل من MasterChain وBaseChain (ويُشار إلى الأخيرة أيضًا باسم WorkChain الأساسية).
+
+يُعرَّف معرّف الحساب (**account_id**) على أنه نتيجة تطبيق دالة hash على كائن العقد الذكي. ويخزن كل عقد ذكي يعمل على TON Blockchain مكوّنين رئيسيين:
+
+1. _الشفرة المصرّفة_. منطق العقد بصيغة bytecode.
+2. _البيانات الأولية_. قيم العقد في لحظة نشره على السلسلة.
+
+يُشتق عنوان العقد عبر حساب hash للزوج **(initial code, initial data)**:
+
+**account_id = hash(initial code, initial data)**
+
+## الملخص
+
+- **كل ممثل هو عقد ذكي**، ولكل واحد عنوان فريد لتوجيه الرسائل.
+- **بنية العنوان**:  
+  - `workchain_id` (32 بت): يحدد WorkChain.
+  - `account_id` (256 بت): hash للشفرة الأولية وحالة العقد الأولية.
+- **WorkChains النشطة**: MasterChain وBaseChain، وكلاهما يستخدم معرّفات من 256 بت.
+- **المرونة**: تدعم TON ما يصل إلى `2^32` WorkChains، مما يسمح للسلاسل المستقبلية بتخصيص أطوال العناوين (من 64 إلى 512 بت).
+
+## الخطوات التالية
+لمزيد من التفاصيل التقنية، راجع:
+- [Address formats](/v3/documentation/smart-contracts/addresses/address-formats): قواعد الترميز وأمثلة عملية.
+- [Address states](/v3/documentation/smart-contracts/addresses/address-states): كيف تتطور العناوين (active وfrozen وما إلى ذلك).
+
+<Feedback />

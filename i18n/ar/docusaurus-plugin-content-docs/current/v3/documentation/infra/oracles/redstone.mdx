@@ -1,0 +1,360 @@
+import Feedback from '@site/src/components/Feedback';
+
+import ThemedImage from '@theme/ThemedImage';
+
+# مصادر بيانات RedStone (RedStone oracles)
+
+## كيف تعمل مصادر بيانات RedStone مع TON
+
+تستخدم مصادر بيانات RedStone تصميمًا بديلاً لتوفير بيانات المصدر (oracle) للعقود الذكية. فبدلاً من تخزين البيانات باستمرار في تخزين العقد (بواسطة مزودي البيانات)، يتم جلب المعلومات على السلسلة فقط عند الحاجة إليها (بواسطة المستخدمين النهائيين). وحتى تلك اللحظة، تبقى البيانات في طبقة التخزين المؤقت اللامركزية، المدعومة بواسطة بوابات التخزين المؤقت الخفيفة (light cache gateways) الخاصة بـ RedStone وبروتوكول بث بيانات قائم على التدفق (stream-based). يتم نقل البيانات إلى العقد بواسطة المستخدمين النهائيين، الذين يجب عليهم إرفاق حزم بيانات موقّعة (signed data packages) عند استدعاء الدوال. ويتم التحقق من سلامة المعلومات على السلسلة من خلال فحص التوقيع.
+
+لمعرفة المزيد عن تصميم مصدر بيانات RedStone، راجع [توثيق RedStone](https://docs.redstone.finance/docs/introduction).
+
+## روابط التوثيق
+
+- [موصل RedStone TON (RedStone TON Connector)](https://github.com/redstone-finance/redstone-oracles-monorepo/tree/main/packages/ton-connector)
+
+## العقود الذكية
+
+### price_manager
+
+- عقد مصدر بيانات نموذجي يستهلك بيانات مصادر RedStone [price_manager.fc](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/contracts/price_manager.fc) مكتوب بلغة
+  FunC. يتطلب [ترقية TVM لعام 2023.07](/v3/documentation/tvm/changelog/tvm-upgrade-2023-07).
+
+#### البيانات الأولية
+
+كما ذُكر أعلاه، يتم التحقق من حزم البيانات المنقولة إلى العقد عن طريق فحص التوقيع.
+لكي يُحتسب الموقّع ضمن تحقيق `signer_count_threshold`، يجب أن يكون الموقّع الذي وقّع البيانات الممررة
+واحدًا من `signers` الممرَّرة في البيانات الأولية. كما يلزم أيضًا تمرير `signer_count_threshold`.
+
+نظرًا لبنية عقود TON، يجب أن تتوافق البيانات الأولية مع بنية تخزين العقد،
+والتي تُبنى كما يلي:
+
+```ts
+  begin_cell()
+    .store_uint(signer_count_threshold, 8)  /// number as passed below
+    .store_uint(timestamp, TIMESTAMP_BITS)  /// initially 0 representing the epoch 0
+    .store_ref(signers)                     /// serialized tuple of values passed below
+  .end_cell();
+```
+
+يجب تمرير قيمة `signers` على شكل `tuple` مُسلسَل (serialized) من نوع `int`.
+راجع [tuple](https://github.com/ton-core/ton-core/blob/main/src/tuple/tuple.ts).
+
+{/* To define the initial (storage) data for the Price manager contract, use the predefined
+class [PriceManagerInitData.ts](../src/price-manager/PriceManagerInitData.ts). */}
+
+في معاملات الدالة أدناه، كل `feed_id` هو سلسلة نصية مُرمَّزة إلى `int`، أي أنها قيمة
+تتكوّن من القيم السداسية عشرية (hex) للحروف الفردية في السلسلة النصية. على سبيل المثال:
+`'ETH'` كقيمة `int` هي `0x455448` بالسداسي عشري أو `4543560` بالعشري، حيث
+
+```ccp
+feed_id(ETH) = 256*256*ord('E')+256*ord('T')+ord('H')` = 4543560
+```
+
+يمكنك استخدام: `feed_id=hexlify(toUtf8Bytes(feed_string))` لتحويل قيم معينة أو
+[المحوّل عبر الإنترنت](https://cairo-utils-web.vercel.app/).
+
+يجب تمرير قيمة `feed_ids` على شكل `tuple` مُسلسَل من نوع `int`.
+
+يتم تجميع القيمة `payload` من مصفوفة من البايتات التي تمثل حمولة RedStone (RedStone payload) المُسلسَلة.
+راجع قسم [تجميع حمولة RedStone في TON](#ton-redstone-payload-packing) أدناه، بالإضافة إلى الملف [constants.fc](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/contracts/redstone/constants.fc)، الذي يحتوي على جميع ثوابت الأطوال (`int`-length) المطلوبة.
+
+#### get_prices_v2
+
+```func
+(cell) get_prices_v2(cell data_feed_ids, cell payload) method_id;
+```
+
+تقوم هذه الدالة بمعالجة `payload` الممرَّرة كوسيطة على السلسلة (on-chain)
+وتُعيد `cell` من القيم المجمَّعة لكل مصدر بيانات (feed) ممرَّر ضمن `feed_ids`.
+
+:::info
+
+هذه الدالة مكتوبة لواجهة برمجة التطبيقات TON Center API الإصدار v2.
+
+:::
+
+هذه مجرد دوال قراءة (`method_id` get methods) — فهي لا تُعدّل تخزين العقد ولا تستهلك عملات TON.
+
+#### OP_REDSTONE_WRITE_PRICES
+
+بغضّ النظر عن المعالجة الفورية (on-the-fly)، توجد أيضًا طريقة لمعالجة `payload` على السلسلة، لكن مع
+حفظ/كتابة القيم المجمَّعة في تخزين العقد. تبقى القيم محفوظة في تخزين العقد ويمكن قراءتها لاحقًا باستخدام دالة `read_prices`. ويمكن قراءة الطابع الزمني (timestamp) لآخر بيانات محفوظة/مكتوبة في العقد باستخدام دالة `read_timestamp`.
+
+يجب استدعاء هذه الطريقة كرسالة داخلية (internal message) في TON. وسيطات الرسالة هي:
+
+- قيمة `int` تمثل اسم RedStone_Write_Prices مُشفَّرة بخوارزمية keccak256 كما هو معرَّف
+  في [constants.ts](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/src/config/constants.ts)
+- مرجع `cell` يمثل `data_feed_ids` على شكل `tuple` مُسلسَل من نوع `int`.\
+- مرجع `cell` يمثل حمولة RedStone المُجمَّعة (packed)
+
+```func
+    int op = in_msg_body~load_uint(OP_NUMBER_BITS);
+
+    if (op == OP_REDSTONE_WRITE_PRICES) {
+        cell data_feeds_cell = in_msg_body~load_ref();
+        cell payload_cell = in_msg_body~load_ref();
+
+    // ...
+    }
+```
+
+هذه رسالة داخلية - تستهلك الغاز (GAS) وتُعدّل تخزين العقد، لذا يجب دفع ثمنها بعملات TON.
+
+شاهد كيف تعمل على: https://ton-showroom.redstone.finance/
+
+#### read_prices
+
+```func
+(tuple) read_prices(tuple data_feed_ids) method_id;
+```
+
+تقرأ هذه الدالة القيم المحفوظة في تخزين العقد وتُعيد `tuple` مطابقًا لـ
+`feed_ids` الممرَّرة. لا تُعدّل الدالة التخزين ويمكنها فقط قراءة القيم المجمَّعة لـ `feed_ids` المحفوظة
+باستخدام [دالة `write_prices`](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/contracts/price_manager.fc#L42).
+
+#### read_timestamp
+
+```func
+(int) read_timestamp() method_id;
+```
+
+تُعيد الطابع الزمني لآخر بيانات محفوظة/مكتوبة في تخزين العقد باستخدام رسالة `OP_REDSTONE_WRITE_PRICES`.
+
+هذه مجرد دالة `method_id` - لا تُعدّل تخزين العقد ولا تستهلك عملات TON.
+
+### price_feed
+
+نظرًا لبنية عقود TON، يجب أن تتوافق البيانات الأولية مع بنية تخزين العقد،
+والتي تُبنى كما يلي:
+
+```ts
+beginCell()
+  .storeUint(BigInt(hexlify(toUtf8Bytes(this.feedId))), consts.DATA_FEED_ID_BS * 8)
+  .storeAddress(Address.parse(this.managerAddress))
+  .storeUint(0, consts.DEFAULT_NUM_VALUE_BS * 8)  /// initially 0 representing the epoch 0
+  .storeUint(0, consts.TIMESTAMP_BS * 8)
+  .endCell();
+```
+
+لتحديد البيانات الأولية (بيانات التخزين) لعقد Price feed، استخدم الفئة المعرَّفة مسبقًا
+[PriceFeedInitData.ts](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/src/price-feed/PriceFeedInitData.ts).
+
+#### OP_REDSTONE_FETCH_DATA
+
+بغضّ النظر عن قراءة القيم المحفوظة في العقد من خارج الشبكة،
+توجد إمكانية لجلب القيمة المخزَّنة في العقد لـ `feed_id` معيّن مباشرةً على السلسلة.
+يجب استدعاء رسالة داخلية `OP_REDSTONE_FETCH_DATA`. وسيطات الرسالة هي:
+
+- قيمة `int` تمثل اسم `RedStone_Fetch_Data` مُشفَّرة بخوارزمية keccak256 كما هو معرَّف
+  في [constants.ts](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/src/config/constants.ts)
+- قيمة `int` تمثل قيمة `feed_id`.
+- `slice` يمثل `initial_sender` الخاص بالرسالة، للسماح لهم بحمل رصيد المعاملة المتبقي
+  عند إرسال معاملة العودة.
+
+```func
+    int op = in_msg_body~load_uint(OP_NUMBER_BITS);
+
+    if (op == OP_REDSTONE_FETCH_DATA) {
+        int feed_id = in_msg_body~load_uint(DATA_FEED_ID_BITS);
+        cell initial_payload = in_msg_body~load_ref();
+
+        // ...
+    }
+```
+
+يتم إرسال رسالة العودة `OP_REDSTONE_DATA_FETCHED` إلى المُرسِل، وتحتوي على `value` و
+`timestamp` الخاص بحفظ القيمة. يمكن بعد ذلك جلب هذه الرسالة لدى المُرسِل ومعالجتها أو حفظها في
+تخزين المُرسِل.
+تتم إضافة مرجع (`ref`) الحمولة الأولية (`initial_payload`) كمرجع يحتوي، على سبيل المثال، على مُرسِل الرسالة الأولى،
+للسماح لهم بحمل رصيد المعاملة المتبقي.
+
+```ts
+begin_cell()
+  .store_uint(value, MAX_VALUE_SIZE_BITS)
+  .store_uint(timestamp, TIMESTAMP_BITS)
+  .store_ref(initial_payload)
+  .end_cell()
+```
+
+هذه رسالة داخلية - تستهلك الغاز وتُعدّل تخزين العقد، لذا يجب دفع ثمنها بعملات Toncoin.
+
+#### get_price_and_timestamp
+
+```func
+(int, int) get_price_and_timestamp() method_id;
+```
+
+تُعيد آخر قيمة وطابع زمني من تخزين المحوِّل (adapter).
+
+هذه مجرد دالة `method_id` - لا تُعدّل تخزين العقد ولا تستهلك عملات Toncoin.
+
+### single_feed_man
+
+#### البيانات الأولية
+
+مشابهة للبيانات الأولية لـ `prices` و `price_feed`. نظرًا لبنية عقود TON، يجب أن تتوافق البيانات الأولية مع بنية تخزين العقد، والتي تُبنى كما يلي:
+
+```ts
+beginCell()
+  .storeUint(BigInt(hexlify(toUtf8Bytes(this.feedId))), consts.DATA_FEED_ID_BS * 8)
+  .storeUint(this.signerCountThreshold, SIGNER_COUNT_THRESHOLD_BITS)
+  .storeUint(0, consts.DEFAULT_NUM_VALUE_BS * 8)
+  .storeUint(0, consts.TIMESTAMP_BS * 8)
+  .storeRef(serializeTuple(createTupleItems(this.signers)))
+  .endCell();
+```
+
+لتحديد البيانات الأولية (بيانات التخزين) لعقد SingleFeedMan، استخدم الفئة المعرَّفة مسبقًا
+[SingleFeedManInitData.ts](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/src/single-feed-man/SingleFeedManInitData.ts).
+
+عقد مشابه لـ `price_manager`، لكنه
+يدعم مصدر بيانات (feed) واحدًا فقط، لتجنب الحاجة إلى الاتصال بين عقود المصدر والمدير.
+
+#### get_price
+
+```func
+(int, int) get_price(cell payload) method_id;
+```
+
+مشابهة لـ `get_prices`، لكن مع حذف الوسيطة الأولى (`data_feed_ids`) لأنها تم ضبطها أثناء
+التهيئة. تُعيد أيضًا أدنى طابع زمني (min timestamp) لحزم البيانات الممرَّرة.
+
+#### read_price_and_timestamp
+
+```func
+(int, int) read_price_and_timestamp() method_id;
+```
+
+تعمل مثل دالة `get_price_and_timestamp`.
+
+#### OP_REDSTONE_WRITE_PRICE
+
+مشابهة لـ `OP_REDSTONE_WRITE_PRICES`، لكن مع حذف مرجع `cell` الأول (`data_feed_ids`) لأنه تم ضبطه أثناء التهيئة.
+
+```func
+    int op = in_msg_body~load_uint(OP_NUMBER_BITS);
+
+    if (op == OP_REDSTONE_WRITE_PRICE) {
+        cell payload_cell = in_msg_body~load_ref();
+
+        // ...
+    }
+```
+
+### sample_consumer
+
+مستهلك نموذجي (sample consumer) للبيانات المخزَّنة في `price_feed`. يعمل أيضًا مع `single_feed_man`.
+يجب تمرير `price_feed` المطلوب استدعاؤه.
+
+- [sample_consumer.fc](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/contracts/sample_consumer.fc)
+
+#### البيانات الأولية
+
+مشابهة للبيانات الأولية لـ `price_feed`. نظرًا لبنية عقود TON، يجب أن تتوافق البيانات الأولية مع بنية تخزين العقد، والتي تُبنى كما يلي:
+
+```ts
+beginCell()
+  .storeAddress(Address.parse(this.feedAddress))
+  .endCell();
+```
+
+لتحديد البيانات الأولية (بيانات التخزين) لعقد Price manager، استخدم الفئة المعرَّفة مسبقًا
+[SampleConsumerInitData.ts](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/src/sample-consumer/SampleConsumerInitData.ts).
+
+يستدعي العقد المصدر الفردي (single feed).
+
+#### OP_REDSTONE_READ_DATA
+
+توجد إمكانية لجلب القيمة المخزَّنة في العقد لـ `feed_id` معيّن مباشرةً على السلسلة.
+يجب استدعاء رسالة داخلية `OP_REDSTONE_READ_DATA`. وسيطات الرسالة هي:
+
+- `slice` يمثل `initial_sender` الخاص بالرسالة، للسماح لهم بحمل رصيد المعاملة المتبقي
+  عند إرسال معاملة العودة.
+— مرجع `cell` يمثل `initial_payload`.
+
+```func
+    int op = in_msg_body~load_uint(OP_NUMBER_BITS);
+
+    if (op == OP_REDSTONE_READ_DATA) {
+        cell initial_payload = in_msg_body~load_ref();
+
+        // ...
+    }
+```
+
+يتم إرسال رسالة العودة `OP_REDSTONE_DATA_READ` إلى المُرسِل، وتحتوي على `feed_id` و `value` و
+`timestamp` الخاص بحفظ القيمة. يمكن بعد ذلك جلب هذه الرسالة لدى المُرسِل ومعالجتها أو حفظها في
+تخزين المُرسِل.
+تتم إضافة مرجع (`ref`) الحمولة الأولية (`initial_payload`) كمرجع يحتوي، على سبيل المثال، على مُرسِل الرسالة الأولى،
+للسماح لهم بحمل رصيد المعاملة المتبقي.
+
+```ts
+begin_cell()
+  .store_uint(value, MAX_VALUE_SIZE_BITS)
+  .store_uint(timestamp, TIMESTAMP_BITS)
+  .store_ref(initial_payload)
+  .end_cell()
+```
+
+هذه رسالة داخلية - تستهلك الغاز وتُعدّل تخزين العقد، لذا يجب دفع ثمنها بعملات Toncoin.
+
+## تجميع حمولة RedStone في TON
+
+بسبب قيود حجم [كيس الخلايا (Bag of Cells - BoC)](https://docs.ton.org/v3/documentation/data-formats/cells/overview/#bag-of-cells)،
+يجب تمرير بيانات حمولة RedStone — الممثَّلة كسلسلة نصية سداسية عشرية (hex string) — إلى العقد بطريقة أكثر تعقيدًا.
+
+بافتراض أن حمولة RedStone معرَّفة [هنا](https://docs.redstone.finance/img/payload.png)،
+يجب تمرير البيانات على شكل `Cell` مبني كما يلي.
+
+1. تتكون خلية *payload* الرئيسية من:
+    1. البيانات الوصفية (metadata) في **بتات مستوى البيانات (data-level bits)** والمكوَّنة من الأجزاء الموضحة في الصورة:
+
+      ![مخطط البيانات الوصفية للحمولة](/img/docs/oracles/red-stone/payload-metadata.png)
+    1. **مرجع (ref)** يحتوي على `udict` مفهرس بأرقام طبيعية متتالية (تبدأ من 0) ويحتوي على قائمة خلايا **data_package**.
+1. تتكون كل خلية *data-package* من:
+    1. توقيع حزمة البيانات في **بتات مستوى البيانات**:
+
+      ![مخطط توقيع حزمة البيانات](/img/docs/oracles/red-stone/data-package-sig.png)
+    1. **مرجع واحد** إلى `cell` يحتوي على بقية بيانات حزمة البيانات في **مستوى البيانات** الخاص بها:
+
+      ![مخطط محتوى حزمة البيانات](/img/docs/oracles/red-stone/data-package-data.png)
+
+#### قيود التنفيذ الحالي
+
+- يجب جلب حمولة RedStone من خلال تحديد مصادر البيانات (data feeds) بشكل صريح،
+  مما يؤدي إلى انتماء **نقطة بيانات واحدة** إلى **حزمة بيانات واحدة**.
+- يجب ألا يتجاوز حجم البيانات الوصفية غير الموقَّعة `127 - (2 + 3 + 9) = 113` بايت.
+
+#### أداة مساعدة
+
+تتحقق الطريقة `createPayloadCell` في الملف [create-payload-cell.ts](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/src/create-payload-cell.ts) من هذه القيود وتُعِدّ البيانات لإرسالها إلى العقد كما هو موضح أعلاه.
+
+#### مثال على التسلسل (serialization)
+
+تحتوي الصورة أدناه على بيانات لـ `2` مصدر بيانات مضروبة في `2` موقِّع فريد:
+![مثال على تسلسل الحمولة (مصدران × موقِّعان)](/img/docs/oracles/red-stone/sample-serialization.png)
+
+## احتمالات فشل المعاملة
+
+- يجب أن يكون عدد الموقِّعين المُستخرَجين من التوقيعات والمطابقين لـ `addresses` الممرَّرة في المُهيئ (initializer)
+  أكبر من أو يساوي `signer_count_threshold` في المُنشئ (constructor)، لكل مصدر بيانات.
+    - وإلا، ستفشل المعاملة (panic) مع خطأ رقم `300`، مضافًا إليه أول فهرس لمصدر البيانات
+      الممرَّر الذي انتهك التحقق.
+- يجب ألا يكون الطابع الزمني لحزم البيانات أقدم من 15 دقيقة بالنسبة إلى `block_timestamp`.
+    - وإلا، ستفشل المعاملة مع خطأ رقم `200`، مضافًا إليه أول فهرس لحزمة بيانات الحمولة
+      التي انتهكت التحقق، ومضافًا إليه أيضًا `50` إذا كان الطابع الزمني للحزمة في
+      المستقبل.
+- تستهلك الرسائل الداخلية الغاز ويجب دفع ثمنها بعملات Toncoin. تتوفر البيانات في العقد
+  فور نجاح المعاملة.
+- رموز الأخطاء الأخرى معرَّفة [هنا](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/ton-connector/src/config/constants.ts)
+
+## راجع أيضًا
+
+- [توثيق الرسائل الداخلية](/v3/documentation/smart-contracts/message-management/internal-messages)
+- [تجميع بيانات RedStone](https://docs.redstone.finance/docs/smart-contract-devs/how-it-works)
+- [العقود الذكية لمصادر بيانات RedStone](https://github.com/redstone-finance/redstone-oracles-monorepo/tree/main/packages/ton-connector/contracts)
+
+<Feedback />
+

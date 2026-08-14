@@ -1,0 +1,148 @@
+import Feedback from '@site/src/components/Feedback'
+
+# المقدمة
+
+مرحبًا بك في الوثائق الرسمية للمطورين الخاصة بـ **TON Blockchain**.
+
+صُمم هذا القسم _للمطورين الذين يبنون تطبيقات متقدمة وعقودًا ذكية على TON_. وهو يقدّم شروحات متعمقة وأمثلة تنفيذية وأفضل الممارسات.
+
+
+## استكشف الموضوعات الأساسية
+
+<div style={{
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: '1.25rem',
+  marginTop: '1.5rem'
+}}>
+
+  {[
+    {
+      title: 'العقود الذكية',
+      desc: 'تعرّف على كيفية عنونة العقود وتنفيذها في TON. واكتشف اللغات ونموذج الرسائل ورسوم المعاملات.',
+      link: '/v3/documentation/smart-contracts/overview',
+      btn: 'استكشف العقود الذكية'
+    },
+    {
+      title: 'DApps',
+      desc: 'استكشف اللبنات الأساسية المستخدمة في تطوير DApp على TON: الأصول الرقمية ومبادئ DeFi وأوراكل البلوكشين.',
+      link: '/v3/documentation/dapps/dapps-overview',
+      btn: 'ابنِ DApp'
+    },
+    {
+      title: 'تنسيقات البيانات',
+      desc: 'استكشف لغة TL-B وأنواعها وبنية الخلية والخلايا الخاصة وتسلسل الرسائل والكتل.',
+      link: '/v3/documentation/data-formats/tlb/overview',
+      btn: 'تعمّق في تنسيقات البيانات'
+    },
+    {
+      title: 'الآلة الافتراضية',
+      desc: 'افهم نموذج التنفيذ وتهيئة TVM ورموز الخروج ومجموعة التعليمات منخفضة المستوى.',
+      link: '/v3/documentation/tvm/overview',
+      btn: 'تعرّف على TVM'
+    },
+  ].map(({ title, desc, link, btn }) => (
+    <div
+      key={title}
+      style={{
+        border: '1px solid #e5e7eb',
+        borderRadius: '0.75rem',
+        padding: '0.9rem 1rem',
+        backgroundColor: 'var(--card-bg)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.6rem',
+        color: 'var(--text-color)'
+      }}
+    >
+      <h3 style={{ fontSize: '1rem', fontWeight: '600', margin: 0 }}>{title}</h3>
+      <p style={{ fontSize: '0.84rem', lineHeight: '1.45', margin: 0 }}>{desc}</p>
+      <a href={link} style={{
+        alignSelf: 'start',
+        padding: '0.4rem 0.75rem',
+        backgroundColor: 'var(--btn-bg)',
+        color: 'var(--btn-text)',
+        borderRadius: '0.5rem',
+        fontSize: '0.8rem',
+        textDecoration: 'none',
+        marginTop: 'auto'
+      }}>{btn}</a>
+    </div>
+  ))}
+</div>
+
+
+## اختر مسارك
+
+رغم أن هذا القسم موجّه للمطورين ذوي الخبرة، فإن وثائق TON تتضمن أيضًا أقسامًا مخصصة للمستخدمين ولمطوري البداية.
+استخدم الروابط أدناه للانتقال إلى نقطة البداية الأنسب لاحتياجاتك.
+
+<div style={{
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: '1.25rem',
+  marginTop: '1.5rem'
+}}>
+
+  {[
+    {
+      title: 'مفاهيم للمستخدمين والمهتمين',
+      desc: (<>
+        موارد تعليمية ومفاهيم أساسية.<br />
+        تعرّف على أسس TON ونظامها البيئي.
+      </>),
+      link: '/v3/concepts/dive-into-ton/introduction',
+      btn: 'تعلّم الأساسيات'
+    },
+    {
+      title: 'إرشادات للمطورين المبتدئين',
+      desc: (<>
+        إرشادات خطوة بخطوة.<br />
+        تعلّم كيفية تشغيل العقد ونشر التطبيقات النموذجية والتكامل مع TON.
+      </>),
+      link: '/v3/guidelines/quick-start/getting-started',
+      btn: 'ابدأ البناء'
+    }
+  ].map(({ title, desc, link, btn }) => (
+    <div
+      key={title}
+      style={{
+        border: '1px solid #e5e7eb',
+        borderRadius: '0.75rem',
+        padding: '0.9rem 1rem',
+        backgroundColor: 'var(--card-bg)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        gap: '0.75rem',
+        height: '100%',
+        color: 'var(--text-color)'
+      }}
+    >
+      <h3 style={{ fontSize: '1rem', fontWeight: '600', margin: 0 }}>{title}</h3>
+      <p style={{ fontSize: '0.84rem', lineHeight: '1.45', margin: 0 }}>{desc}</p>
+      <a href={link} style={{
+        alignSelf: 'start',
+        padding: '0.4rem 0.75rem',
+        backgroundColor: 'var(--btn-bg)',
+        color: 'var(--btn-text)',
+        borderRadius: '0.5rem',
+        fontSize: '0.8rem',
+        textDecoration: 'none',
+        marginTop: 'auto'
+      }}>{btn}</a>
+    </div>
+  ))}
+</div>
+
+## كيفية المساهمة
+
+هذا جهد مفتوح المصدر — [إليك كيفية المساهمة](/v3/contribute).
+
+## انظر أيضًا
+
+- [الأسئلة الشائعة](/v3/documentation/faq)
+
+<Feedback />

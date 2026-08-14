@@ -1,0 +1,47 @@
+import Feedback from '@site/src/components/Feedback';
+
+import Button from '@site/src/components/button'
+
+# NFT
+
+## نظرة عامة
+
+الرموز غير القابلة للاستبدال (NFTs) هي أصول رقمية تمثل رموزًا غير قابلة للاستبدال ضمن منظومة TON، كما هو معرف في معايير NFT التالية:
+
+- [معيار NFT](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md)
+- [معيار SBT](https://github.com/ton-blockchain/TEPs/blob/master/text/0085-sbt-standard.md)
+- [معيار عوائد NFT](https://github.com/ton-blockchain/TEPs/blob/master/text/0066-nft-royalty-standard.md)
+- [معيار NFT 2.0](/v3/documentation/dapps/assets/nft-2.0)
+
+NFTs لامركزية وتتجنب نقاط الفشل الأحادية والاختناقات.
+كل NFT في مجموعة معينة هو عقد ذكي منفصل.
+
+يمكنك أدناه العثور على الوثائق والأدوات وأفضل الممارسات لدمج NFTs في تطبيقك اللامركزي، بما في ذلك كيفية السك والنقل والاستعلام عن مجموعات NFT وعناصرها.
+
+## الأدلة الإرشادية
+
+- [تحليل البيانات الوصفية](/v3/guidelines/dapps/asset-processing/nft-processing/metadata-parsing)
+
+## العقود الذكية
+
+- [تنفيذ العقود الذكية (FunC)](https://github.com/ton-blockchain/token-contract/)
+- [عقود البيع والمزاد لـ Getgems NFT (FunC)](https://github.com/getgems-io/nft-contracts)
+
+## أدوات سك NFT
+
+- [NFT Deployer](https://github.com/tondiamonds/ton-nft-deployer) بواسطة TON Diamonds (TypeScript، بلا تعليقات)
+- [مثال NFT Minter](https://github.com/ton-foundation/token-contract/tree/main/nft/web-example) (JavaScript، مع تعليقات)
+- [NFT Minter باستخدام React](https://github.com/tonbuilders/tonbuilders-minter) (React، بلا تعليقات)
+- [NFT Deployer](https://github.com/anomaly-guard/nft-deployer) (Python، مع تعليقات)
+- [NFT Minter باستخدام Golang](https://github.com/xssnick/tonutils-go#nft) (مكتبة Golang، مع تعليقات وأمثلة كاملة)
+
+## أدوات للعمل مع NFTs
+
+- [LiberMall/tnt](https://github.com/LiberMall/tnt) — TNT هي أداة سطر أوامر شاملة للاستعلام والتحرير وسك رموز غير قابلة للاستبدال جديدة على The Open Network.
+
+## أنظر أيضًا
+
+- [NFT 2.0](/v3/documentation/dapps/assets/nft-2.0/)
+- [معالجة الأصول](/v3/guidelines/dapps/asset-processing/jettons/)
+
+<Feedback />

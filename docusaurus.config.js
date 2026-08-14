@@ -28,6 +28,11 @@ const getEnvLangConfig = () => {
         label: 'Русский',
         path: "ru",
       },
+      ar: {
+        label: 'العربية',
+        direction: 'rtl',
+        path: "ar",
+      },
     },
   };
 };

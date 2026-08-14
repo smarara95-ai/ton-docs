@@ -1,0 +1,194 @@
+import Feedback from '@site/src/components/Feedback';
+
+import Player from '@site/src/components/player'
+
+# المحافظ
+
+## نظرة عامة
+
+يقدم هذا المقال نظرة عامة على أنواع المحافظ المختلفة في نظام TON البيئي، مع التركيز على ميزاتها الأساسية ونماذج الأمان والمستخدمين المستهدفين — بدءًا من المستخدمين العاديين وصولًا إلى المطورين. يساعدك هذا المقال على اختيار المحفظة المناسبة، ويشرح كيف تدعم المحافظ هدف TON المتمثل في التبني الجماعي.
+
+<br />
+
+<Player url="https://www.youtube.com/watch?v=OfW96enpD4Q" />
+
+<br />
+
+استكشف الدليل الكامل [ton.org/wallets](https://ton.org/wallets) للمزيد من خيارات المحافظ.
+
+## المحافظ غير الاحتجازية (Non-custodial)
+
+تمنح **المحافظ غير الاحتجازية** المستخدمين ملكية وتحكمًا كاملين في مفاتيحهم الخاصة وأموالهم. على عكس المحافظ الاحتجازية، التي يديرها طرف ثالث، تخزّن المحافظ غير الاحتجازية المفاتيح الخاصة حصريًا لدى المستخدم، مؤمَّنة باستخدام عبارة أولية (تسمى أيضًا عبارة الاسترداد) — وهي سلسلة فريدة من 24 كلمة.
+
+### المحافظ البرمجية (الساخنة)
+
+**المحفظة البرمجية** — يُشار إليها عادة باسم **المحفظة الساخنة** — تعمل محليًا على جهاز مثل هاتف ذكي أو حاسوب، وتخزّن المفاتيح الخاصة بأمان داخل تخزين الجهاز.
+
+فيما يلي مجموعة مختارة من محافظ البرمجيات غير الاحتجازية البارزة.
+
+#### محافظ للمستخدمين العاديين
+
+<table style={{ width: '100%', tableLayout: 'fixed' }}>
+  <thead>
+  <tr>
+    <th style={{ width: '5%' }}>المحفظة</th>
+    <th style={{ width: '40%' }}>الوصف</th>
+    <th style={{ width: '1%' }}>المنصات</th>
+    <th style={{ width: '50%' }}>الوصول إلى شبكة الاختبار</th>
+    <th style={{ width: '4%' }}>الروابط</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td><a href="https://tonkeeper.com"><strong>Tonkeeper</strong></a></td>
+    <td>محفظة مفتوحة المصدر شائعة الاستخدام في نظام TON البيئي. تدعم الرموز و NFTs.</td>
+    <td>iOS، Android</td>
+    <td>
+      1. أنشئ محفظة واحفظ عبارة الاسترداد.<br />
+      2. من الشاشة الرئيسية، اضغط على اسم المحفظة ← **Add Wallet** ← **Testnet Account**.<br />
+      3. أدخل عبارة الاسترداد المحفوظة.
+    </td>
+    <td>
+      <a href="https://github.com/tonkeeper/">GitHub</a><br />
+      <a href="https://github.com/tonkeeper/wallet-api">Wallet API</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td><a href="https://mytonwallet.io"><strong>MyTonWallet</strong></a></td>
+    <td>محفظة ويب مفتوحة المصدر تدعم الرموز و NFTs و TON DNS و TON Sites و TON Proxy — ومتوافقة أيضًا مع TRON.</td>
+    <td>iOS، Android، Chrome، Firefox</td>
+    <td>
+      1. افتح **Settings**.
+      2. مرّر لأسفل واضغط على **MyTonWallet app version**.
+      3. اختر البيئة في النافذة المنبثقة.
+    </td>
+    <td>
+      <a href="https://github.com/mytonwalletorg/mytonwallet">GitHub</a><br />
+      <a href="https://t.me/MyTonWalletRu">Telegram</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td><a href="https://tonhub.com"><strong>Tonhub</strong></a></td>
+    <td>محفظة مفتوحة المصدر تركز على الهاتف المحمول أولًا مع تكامل <a href="https://github.com/tonwhales/ton-nominators">Ton Nominator</a>.</td>
+    <td>iOS، Android</td>
+    <td>
+      - يتطلب تطبيقًا مختلفًا لنظام
+      <a href="https://apps.apple.com/app/ton-development-wallet/id1607857373">iOS</a>
+      - نفس التطبيق لنظام
+      <a href="https://play.google.com/store/apps/details?id=com.tonhub.wallet">Android</a>
+      - اضغط 6 مرات أو أكثر على إصدار التطبيق لتغيير البيئة
+    </td>
+    <td>
+      <a href="https://github.com/tonwhales/wallet">GitHub</a><br />
+      <a href="https://tonwhales.com/bounty">Bug bounty</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+
+#### محافظ للمطورين
+
+<table style={{ width: '100%', tableLayout: 'fixed' }}>
+  <thead>
+  <tr>
+    <th style={{ width: '10%' }}>المحفظة</th>
+    <th style={{ width: '24%' }}>الوصف</th>
+    <th style={{ width: '3%' }}>المنصات</th>
+    <th style={{ width: '3%' }}>الروابط</th>
+    <th style={{ width: '60%' }}>أبرز المزايا</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td><a href="https://github.com/TonDevWallet/TonDevWallet"><strong>TONDevWallet</strong></a></td>
+    <td>محفظة سطح مكتب مفتوحة المصدر مصممة للتطوير والاختبار.</td>
+    <td>سطح المكتب</td>
+    <td><a href="https://github.com/TonDevWallet/TonDevWallet">GitHub</a></td>
+    <td>
+      <ul style={{ paddingLeft: '16px', margin: 0 }}>
+        <li>تكامل سلس مع TON Connect</li>
+        <li>محاكاة معاملات محلية قبل الإرسال على السلسلة.</li>
+        <li>إدارة مفاتيح ومحافظ متعددة</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><a href="https://chrome.google.com/webstore/detail/ton-wallet/nphplpgoakhhjchkkhmiggakijnkhfnd"><strong>TON Wallet</strong></a></td>
+    <td>المحفظة الأصلية من TON Core التي تُظهر التنفيذ المرجعي.</td>
+    <td>iOS، Android، macOS، Linux، Windows، Chrome</td>
+    <td>
+      <a href="https://github.com/ton-blockchain/ton-wallet">GitHub</a><br />
+      <a href="https://github.com/ton-blockchain/wallet-ios">GitHub for iOS</a>
+    </td>
+    <td>
+      <ul style={{ paddingLeft: '16px', margin: 0 }}>
+        <li>دعم اتصال ADNL</li>
+        <li>بنية متعددة المنصات</li>
+        <li><a href="https://github.com/ton-blockchain/bug-bounty">برنامج مكافآت الأخطاء (Bug bounty)</a></li>
+        <li>يدعم معامل `testnet` في المتصفح</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><a href="https://www.openmask.app/"><strong>OpenMask</strong></a></td>
+    <td>ملحق Chrome مفتوح المصدر يركز على تطوير Web3 و DApp.</td>
+    <td>Chrome</td>
+    <td>
+      <a href="https://github.com/OpenProduct/openmask-extension">GitHub</a><br />
+      <a href="https://www.openmask.app/docs/introduction">Docs</a>
+    </td>
+    <td>
+      <ul style={{ paddingLeft: '16px', margin: 0 }}>
+        <li>ملحق Chrome محسّن لتطوير DApp</li>
+        <li>دعم محافظ متعددة</li>
+      </ul>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+:::warning
+[TONDevWallet](https://github.com/TonDevWallet/TonDevWallet) مخصصة للتطوير والاختبار فقط.
+لا **تستخدمها** لتخزين أموال حقيقية — فهي **غير آمنة** ولا توفر حماية كافية.
+:::
+
+
+### المحافظ الصلبة (الباردة)
+
+**المحافظ الصلبة** هي أجهزة فعلية تخزّن المفاتيح الخاصة دون اتصال بالإنترنت، مما يعزلها عن مخاطر الإنترنت. حتى عند تفويض المعاملات، توقّع هذه الأجهزة عليها في بيئة آمنة وغير متصلة، مما يضمن عدم مغادرة المفاتيح الخاصة للجهاز أبدًا.
+
+
+| المحفظة | الوصف                                                                      | الروابط |
+|--------|----------------------------------------------------------------------------------|--------|
+| [Ledger](https://www.ledger.com/) | محفظة صلبة بتخزين مفاتيح غير متصل. تستخدم تطبيق Ledger Live لإدارة الأصول. | [منشور مدونة TON](https://blog.ton.org/ton-is-coming-to-ledger-hardware-wallets)<br/>[الموقع الرسمي](https://www.ledger.com/) |
+| [SafePal](https://www.safepal.com/en/) | محفظة صلبة تدعم التطبيقات اللامركزية.                          | [الموقع الرسمي](https://www.safepal.com/en/) |
+
+
+
+## المحافظ الاحتجازية (Custodial)
+
+في **المحافظ الاحتجازية**، يحتفظ طرف ثالث — مثل بورصة عملات مشفرة — بمفاتيح المستخدمين الخاصة ويديرها. هذا يعني أن المستخدمين يعهدون إلى تلك الجهة بتخزين أصولهم والتحكم بها.
+
+| المحفظة | الوصف | الروابط                                                                                                             |
+|--------|-------------|-------------------------------------------------------------------------------------------------------------------|
+| [@wallet](https://t.me/wallet) | بوت تيليجرام لإرسال Toncoin واستلامه وتداوله عبر P2P. يدعم تطبيقات Telegram Mini Apps. | —                                                                                                                 |
+| [@cryptobot](https://t.me/cryptobot)  | محفظة بوت تيليجرام لتخزين Toncoin وإرساله وتبادله. | [Pay API](https://help.crypt.bot/crypto-pay-api)                                                                  |
+| [@tonrocketbot](https://t.me/tonrocketbot) | محفظة بوت تيليجرام لتخزين Toncoin ونقله وتداوله. | [Exchange API](https://trade.ton-rocket.com/api/)، [Pay API](https://pay.ton-rocket.com/api/)                      |
+
+
+## محافظ متعددة التوقيع
+
+| المحفظة   | الوصف | الروابط |
+|----------|-------------|-------|
+| [Tonkey](https://tonkey.app/) | محفظة متعددة التوقيع توفر تحكمًا متقدمًا في الوصول إلى الأصول والموافقات. | [GitHub](https://github.com/tonkey-app) |
+
+
+## انظر أيضًا
+
+- [المستكشفات](/v3/concepts/dive-into-ton/ton-ecosystem/explorers-in-ton/)
+- [عقود المحفظة](/v3/documentation/smart-contracts/contracts-specs/wallet-contracts/)
+
+<Feedback />

@@ -1,0 +1,39 @@
+import Feedback from '@site/src/components/Feedback';
+
+# Content subscriptions
+
+On TON blockchain you can process recurring payments on-chain via smart contracts. For example, users can subscribe to digital content (or anything else) and be charged a monthly fee of 1 Toncoin.
+This feature requires [Wallet v4](https://github.com/ton-blockchain/wallet-contract/) which supports plugins.
+
+Upon installation of subscription plugin, it can transfer Toncoin without further user confirmation. Do your own research before authorizing unknown subscriptions. Users cannot have a subscription installed without their knowledge.
+
+## Example flow
+
+:::warning
+
+A subscription plugin requires authorization only once, which is sufficient to perform further transfers without confirmation.
+
+:::
+
+1. Users with [Wallet v4](/v3/documentation/smart-contracts/contracts-specs/wallet-contracts#wallet-v4) can install additional smart contracts (plugins) to extend wallet functionality.
+
+2. After reviewing plugin functionality, users can approve trusted smart contract (plugin) addresses for their wallet. After approval, trusted smart contracts can withdraw Toncoin from the wallet. This is similar to infinite approval in some other blockchains.
+
+3. An intermediate subscription smart contract, deployed as a wallet plugin, sits between each user and the service.
+
+4. This smart contract guarantees that a specified amount of Toncoin will be debited from a user's wallet at most once per specified period.
+
+5. The backend initiates a charge by sending an external message to the user’s subscription smart contract.
+
+6. Either the user or the service can decide they no longer need a subscription and terminate it.
+
+## Smart contract examples
+
+- [Wallet v4](https://github.com/ton-blockchain/wallet-contract/blob/main/func/wallet-v4-code.fc)
+- [Subscription](https://github.com/ton-blockchain/wallet-contract/blob/main/func/simple-subscription-plugin.fc)
+
+## Implementation
+
+A good example is Toncoin-powered subscriptions to private Telegram channels via the [@donate](https://t.me/donate) bot and the [Tonkeeper wallet](https://tonkeeper.com).
+
+<Feedback />

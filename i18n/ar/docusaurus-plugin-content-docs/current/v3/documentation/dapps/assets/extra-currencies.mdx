@@ -1,0 +1,45 @@
+import Feedback from '@site/src/components/Feedback';
+
+# العملات الإضافية
+
+في TON، العملات الإضافية هي رموز مخصصة تعسفية يمكن تخزينها جنبًا إلى جنب مع TON في رصيد حساب ما.
+
+يمكن تخزين أرصدة العملات الإضافية في كل حساب على البلوكشين (`ExtraCurrencyCollection`) ويمكن نقلها إلى حسابات أخرى بشكل أصلي (في [رسالة داخلية](/v3/documentation/smart-contracts/message-management/internal-messages) من عقد ذكي إلى آخر، يمكنك تحديد خريطة تجزئة لمبالغ العملات الإضافية بالإضافة إلى مبلغ Toncoin).
+
+```tlb
+
+//extra currency part of account balance
+
+extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32)) 
+                 = ExtraCurrencyCollection;
+currencies$_ grams:Grams other:ExtraCurrencyCollection 
+           = CurrencyCollection;
+``` 
+           
+```tlb
+
+//account balance kept in account storage
+           
+account_storage$_ last_trans_lt:uint64
+    balance:CurrencyCollection state:AccountState 
+  = AccountStorage;
+  
+account_none$0 = Account;
+account$1 addr:MsgAddressInt storage_stat:StorageInfo
+          storage:AccountStorage = Account;
+
+```
+
+خريطة تجزئة لمعرفات العملات ومبالغها.
+
+ومع ذلك، يمكن فقط تخزين ونقل العملات الإضافية (مثل Toncoin) ولا تملك شيفرتها أو وظائفها الخاصة.
+
+لاحظ أنه إذا تم إنشاء عدد كبير من العملات الإضافية، سيزداد حجم حالة الحساب لأنه يجب تخزينها.
+
+لذلك، من الأفضل استخدام العملات الإضافية للعملات اللامركزية المعروفة جيدًا (على سبيل المثال، البيتكوين المغلف أو الإيثر)، ويجب أن يكون إنشاء مثل هذه العملة الإضافية مكلفًا جدًا.
+
+[Jettons](/v3/documentation/dapps/assets/jetton) مناسبة للمهام الأخرى.
+
+حتى الآن، لم يتم إنشاء أي عملة إضافية على بلوكشين TON. تدعم بلوكشين TON بشكل كامل العملات الإضافية في الحسابات والرسائل. اطلع على [عملية السك](/v3/documentation/network/config-params/extra-currency) لمزيد من التفاصيل.
+
+<Feedback />

@@ -1,0 +1,128 @@
+import Feedback from '@site/src/components/Feedback';
+
+# عقود الحوكمة
+
+في TON، تتحكم مجموعة من العقود الذكية الخاصة في معلمات الإجماع الخاصة بتشغيل العقد — بما في ذلك TVM وCatchain والرسوم وطوبولوجيا السلسلة — وكيفية تخزين هذه المعلمات وتحديثها. وعلى عكس سلاسل الكتل الأقدم التي تُضمّن هذه المعلمات داخل الشيفرة، تتيح TON حوكمة شفافة على السلسلة. تشمل عقود الحوكمة الحالية عقدي **Elector** و**Config**؛ بينما يُعد **DNS** عقد نظام ذي صلة (لكنه لا يحكم الإجماع). وقد يشمل التوسع المستقبلي **Minter for extra-currencies**.
+
+## Elector
+
+يدير العقد الذكي **Elector** انتخابات المدققين وجولات التحقق وتوزيع المكافآت. لكي تصبح مدققًا وتتفاعل مع Elector، اتبع [تعليمات المدققين](https://ton.org/validators) و[الدليل الداخلي](/v3/guidelines/nodes/running-nodes/validator-node).
+
+### تخزين البيانات
+
+يخزن Elector ما يلي:
+
+- Toncoin غير المسحوب في hashmap `credits`.
+- طلبات المدققين الجديدة في hashmap `elect`.
+- بيانات الانتخابات السابقة في hashmap `past_elections` (بما في ذلك الشكاوى وحصص `frozen` المحتفظ بها لفترات `stake_held_for`، كما هو محدد في [**ConfigParam 15**](/v3/documentation/network/config-params/overview#param-15)).
+
+### الوظائف الأساسية
+
+1. **معالجة طلبات المدققين**
+2. **إجراء الانتخابات**
+3. **التعامل مع تقارير سوء سلوك المدققين**
+4. **توزيع مكافآت التحقق**
+
+#### معالجة الطلبات
+
+للتقديم، يجب على المدقق:
+
+1. إرسال رسالة إلى Elector تتضمن عنوان ADNL الخاص به، والمفتاح العام، و`max_factor`، والحصة (مقدار Toncoin).
+2. يتحقق Elector من المعلمات ثم يسجل الطلب أو يعيد الحصة.
+_ملاحظة:_ يمكن فقط لعناوين masterchain التقديم.
+
+### إجراء الانتخابات
+
+يُعد Elector عقدًا ذكيًا خاصًا يتلقى **tick‑tock transactions** يسلّمها البروتوكول في بداية ونهاية كل كتلة MasterChain. ويتحقق خلال كل كتلة مما إذا كان قد حان وقت إجراء انتخابات جديدة.
+
+**تفاصيل العملية:**
+
+- أخذ الطلبات التي تكون حصتها ≥ `min_stake` ([**ConfigParam 17**](/v3/documentation/network/config-params/overview#param-17)).
+- ترتيب المرشحين حسب الحصة ترتيبًا تنازليًا.
+- إذا تجاوز عدد المتقدمين `max_validators` ([**ConfigParam 16**](/v3/documentation/network/config-params/overview#param-16))، تُستبعد أقل الحصص.
+- لكل حجم مجموعة فرعية `i` (من 1 إلى عدد المرشحين المتبقين):
+  - يُفترض أن المرشح رقم `i` (الأقل في المجموعة الفرعية) يحدد خط الأساس.
+  - يُحسب الرصيد الفعّال (`true_stake`) لكل مرشح كما يلي:
+
+```text
+min(stake, max_factor * min_stake_in_subset)
+```
+
+- تتبّع المجموعة الفرعية ذات **إجمالي الحصة الفعّالة (TES)** الأعلى.
+- إرسال مجموعة المدققين الفائزة إلى عقد **Config**.
+- إعادة الحصص غير المستخدمة والمبالغ الزائدة (مثل `stake[j] - min(stake[i] * max_factor[j], stake[j])`) إلى `credits`.
+
+**تفصيل المثال:**
+
+- **الحالة 1**: 9 مرشحين يملكون حصة قدرها 100,000 Toncoin (`max_factor=2.7`)، ومرشح واحد يملك 10,000.
+
+  - _من دون المرشح ذي 10k_: TES = 900,000.
+  - _مع المرشح ذي 10k_: TES = 9 \* 27,000 + 10,000 = 253,000.
+  - **النتيجة**: يُستبعد المرشح ذو 10k.
+
+- **الحالة 2**: مرشح واحد يملك 100,000 (`max_factor=2.7`)، و9 يملكون 10,000.
+  - الحصة الفعّالة للمرشح ذي 100k: `10,000 * 2.7 = 27,000`.
+  - الفائض: `100,000 - 27,000 = 73,000` → يُرسل إلى `credits`.
+  - **النتيجة**: يشارك العشرة جميعًا.
+
+**قيود الانتخابات:**
+
+- `min_validators` ≤ عدد المشاركين ≤ `max_validators` ([**ConfigParam 16**](/v3/documentation/network/config-params/overview#param-16)).
+- يجب أن تستوفي الحصص ما يلي:
+- `min_stake` ≤ الحصة ≤ `max_stake`
+  - `min_total_stake` ≤ إجمالي الحصة
+  - نسب الحصص ≤ `max_stake_factor` ([**ConfigParam 17**](/v3/documentation/network/config-params/overview#param-17)).
+- إذا لم تتحقق الشروط، **تؤجل** الانتخابات.
+
+### عملية الإبلاغ عن سوء سلوك المدقق
+
+يُكلَّف كل مدقق بشكل دوري بإنشاء كتل جديدة، ويُحدد تكرار التكليفات حسب وزنه. بعد جولة تحقق، يمكن لأي شخص تدقيق الكتل للتحقق مما إذا كان العدد الفعلي للكتل التي أنشأها المدقق ينحرف بشكل ملحوظ عن العدد المتوقع (استنادًا إلى وزنه). ويُعد الأداء المنخفض ذا الدلالة الإحصائية (مثل إنشاء عدد أقل من الكتل مما هو متوقع) سوء سلوك.
+
+للإبلاغ عن سوء السلوك، يجب على المستخدم:
+
+1. تقديم إثبات تشفيري يثبت فشل المدقق في إنتاج الكتل المتوقعة.
+2. إرسال الإثبات إلى عقد Elector مع تغطية تكاليف التخزين المرتبطة.
+
+يسجل Elector الشكوى في hashmap `past_elections`. ثم يتحقق مدققو الجولة الحالية من الشكوى. وإذا كان الإثبات صالحًا، يصوّت المدققون على الشكوى. وتتطلب الموافقة اتفاقًا من أكثر من **ثلاثة أرباع إجمالي وزن المدققين** وتتبع حدود الفوز/الخسارة المحددة في [**ConfigParam 11**](/v3/documentation/network/config-params/overview#param-11) (وليس مجرد أغلبية المشاركين).
+
+إذا تمت الموافقة، تُخصم الغرامة (كما تحددها [**ConfigParam 40**](/v3/documentation/network/config-params/overview#param-40) — MisbehaviourPunishmentConfig) من حصة المدقق `frozen` في سجل `past_elections` ذي الصلة. وتبقى هذه الأموال مقفلة طوال الفترة المحددة في [**ConfigParam 15**](/v3/documentation/network/config-params/overview#param-15) (`stake_held_for`).
+
+#### توزيع المكافآت
+
+يُفرج Elector عن الحصص `frozen` والمكافآت (رسوم gas + مكافآت الكتل) بصورة متناسبة للمدققين السابقين. وتُنقل الأموال إلى `credits`، ثم يُزال سجل الانتخابات من `past_elections`.
+
+### الحالة الحالية لـ Elector
+
+يمكنك تتبع البيانات الحية (الانتخابات، الحصص، الشكاوى) عبر [هذا الـ dApp](https://1ixi1.github.io/elector/). هذه أداة مجتمعية؛ استخدمها على مسؤوليتك الخاصة.
+
+## Config
+
+يدير عقد **Config** معلمات إعداد TON، وتحديثات مجموعة المدققين، والتصويت على المقترحات.
+
+### تحديثات مجموعة المدققين
+
+1. يُبلغ **Elector** عقد **Config** بمجموعة مدققين جديدة.
+2. يخزن **Config** هذه المجموعة في [**ConfigParam 36**](/v3/documentation/network/config-params/overview#param-32-34-and-36) (_next validators_).
+3. في الوقت المجدول (`utime_since`)، يقوم **Config** بما يلي:
+   - ينقل المجموعة القديمة إلى **ConfigParam 32** (_previous validators_).
+   - يرقّي [**ConfigParam 36**](/v3/documentation/network/config-params/overview#param-32-34-and-36) إلى [**ConfigParam 34**](/v3/documentation/network/config-params/overview#param-32-34-and-36) (_current validators_).
+
+### آلية المقترحات/التصويت
+
+1. **إرسال مقترح**: ادفع رسوم التخزين لاقتراح تغييرات على المعلمات.
+2. **التصويت**: يوقّع المدققون (من [**ConfigParam 34**](/v3/documentation/network/config-params/overview#param-32-34-and-36)) رسائل الموافقة.
+3. **النتيجة**:
+   - **مقبول**: بعد `min_wins` من الجولات ([**ConfigParam 11**](/v3/documentation/network/config-params/overview#param-11)) مع أصوات موزونة ≥3/4.
+   - **مرفوض**: بعد `max_losses` من الجولات.
+   - _المعلمات الحرجة_ ([**ConfigParam 10**](/v3/documentation/network/config-params/overview#param-10)) تتطلب عددًا أكبر من الجولات.
+
+#### التحديثات الطارئة
+
+تُقترح ترقيات الشيفرة عبر معلمات إعداد خاصة: **-1000** (Config) و**-1001** (Elector).
+
+## انظر أيضًا
+
+- [العقود المسبقة التجميع](/v3/documentation/smart-contracts/contracts-specs/precompiled-contracts)
+- [أمثلة العقود](https://docs.ton.org/v3/documentation/smart-contracts/contracts-specs/examples/#contracts-used-in-production)
+
+<Feedback />

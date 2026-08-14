@@ -1,7 +1,7 @@
 import React, {
   ChangeEvent,
+  InputHTMLAttributes,
   KeyboardEvent,
-  HTMLAttributes,
   useCallback,
   useEffect,
   useState,
@@ -29,11 +29,11 @@ type Props<DataItem> = {
    * Decides which keys will be shown in the results
    * */
   showKeys: DataKey<keyof DataItem>[];
-} & HTMLAttributes<HTMLInputElement>;
+} & InputHTMLAttributes<HTMLInputElement>;
 
 const uniq = <T,>(data: T[]): T[] => Array.from(new Set(data));
 
-export const SearchField = <T extends Record<string, string>>({ data, searchBy, showKeys, ...props }: Props<T>) => {
+export const SearchField = <T extends Record<string, string>>({ data, searchBy, showKeys, placeholder, 'aria-label': ariaLabel, ...props }: Props<T>) => {
   const timeout = useRef<NodeJS.Timeout | null>(null);
 
   const [inputValue, setInputValue] = useState('');
@@ -51,13 +51,15 @@ export const SearchField = <T extends Record<string, string>>({ data, searchBy, 
   }, [])
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    timeout.current = setTimeout(() => {
       setDebouncedValue(inputValue);
-    }, 500)
+    }, 500);
 
     return () => {
-      clearTimeout(timeout);
-    }
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+    };
   }, [inputValue])
 
   useEffect(() => {
@@ -70,8 +72,10 @@ export const SearchField = <T extends Record<string, string>>({ data, searchBy, 
   }, [data, debouncedValue, searchBy])
 
   useEffect(() => () => {
-    clearTimeout(timeout.current);
-  }, [timeout.current])
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+  }, [])
 
   return (
     <>
@@ -81,6 +85,8 @@ export const SearchField = <T extends Record<string, string>>({ data, searchBy, 
         onKeyUp={handleKeyUp}
         value={inputValue}
         type="text"
+        placeholder={placeholder}
+        aria-label={ariaLabel ?? placeholder ?? 'Search'}
         {...props}
       />
 
